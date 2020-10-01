@@ -1,11 +1,13 @@
-//784 spaces
-const WIDTH = 30;
-const HEIGHT = 30;
+import { stopGame } from "./index"
+export const WIDTH = 30;
+export const HEIGHT = 18;
+export const BLOCK_WIDTH = 32;
 
-const UP = 'UP';
-const DOWN = 'DOWN';
-const LEFT = 'LEFT';
-const RIGHT = 'RIGHT';
+export const UP = 'UP';
+export const DOWN = 'DOWN';
+export const LEFT = 'LEFT';
+export const RIGHT = 'RIGHT';
+const DIRS = [UP, DOWN, LEFT, RIGHT];
 
 const PLAYER = 'A';
 const ROCK = 'O';
@@ -14,12 +16,86 @@ const BREAK = '+';
 const WALL = '#';
 const GROUND = '.';
 const EMPTY = ' ';
+const SCISSORS = 'X';
 
-const PREDATOR_QUANTITY = 3;
-const ROCKS_QUANTITY = 30;
-const STARS_QUANTITY = 30;
-const BREAKS_QUANTITY = 100;
-const GROUND_QUANTITY = 600;
+export const PREDATOR_QUANTITY = 3;
+export const ROCKS_QUANTITY = 10;
+export const STARS_QUANTITY = 10;
+export const BREAKS_QUANTITY = 10;
+export const GROUND_QUANTITY = 250;
+
+
+export const STOP = "STOP";
+export const MOVE_LEFT = "MOVE_LEFT";
+export const MOVE_RIGHT = "MOVE_RIGHT";
+export const FORCE_LEFT = "FORCE_LEFT";
+export const FORCE_RIGHT = "FORCE_RIGHT";
+export const MOVE_UP = "MOVE_UP";
+export const MOVE_DOWN = "MOVE_DOWN";
+
+
+import merphy_sleep_1 from './assets/merphy/merphysleep1.png';
+import merphy_sleep_2 from './assets/merphy/merphysleep2.png';
+import merphy_sleep_3 from './assets/merphy/merphysleep3.png';
+import merphy_sleep_4 from './assets/merphy/merphysleep4.png';
+import merphy_sleep_5 from './assets/merphy/merphysleep5.png';
+import merphy_sleep_6 from './assets/merphy/merphysleep6.png';
+import merphy_sleep_7 from './assets/merphy/merphysleep7.png';
+import merphy_sleep_8 from './assets/merphy/merphysleep8.png';
+import merphy_sleep_9 from './assets/merphy/merphysleep9.png';
+import merphy_sleep_10 from './assets/merphy/merphysleep10.png';
+import merphy_sleep_11 from './assets/merphy/merphysleep11.png';
+import merphy_sleep_12 from './assets/merphy/merphysleep12.png';
+import merphy_sleep_13 from './assets/merphy/merphysleep13.png';
+import merphy_sleep_14 from './assets/merphy/merphysleep14.png';
+import merphy_sleep_15 from './assets/merphy/merphysleep15.png';
+import merphy_sleep_16 from './assets/merphy/merphysleep16.png';
+import sprite from './assets/merphy/sprite.png';
+import sprite2 from './assets/merphy/sprite2.png';
+import sprite3 from "./assets/merphy/sprite3.png";
+
+
+import merphy_left_1 from './assets/merphy/merphyl1.png';
+import merphy_left_2 from './assets/merphy/merphyl2.png';
+import merphy_left_3 from './assets/merphy/merphyl3.png';
+
+import merphy_right_1 from './assets/merphy/merphyr4.png';
+import merphy_right_2 from './assets/merphy/merphyr5.png';
+import merphy_right_3 from './assets/merphy/merphyr6.png';
+
+import meprhy_force_left from './assets/merphy/merphyhl.png';
+import meprhy_force_right from './assets/merphy/merphyhr.png';
+
+const merphy_sleep = [
+    merphy_sleep_1,
+    merphy_sleep_2,
+    merphy_sleep_3,
+    merphy_sleep_4,
+    merphy_sleep_5,
+    merphy_sleep_6,
+    merphy_sleep_7,
+    merphy_sleep_8,
+    merphy_sleep_9,
+    merphy_sleep_10,
+    merphy_sleep_11,
+    merphy_sleep_12,
+    merphy_sleep_13,
+    merphy_sleep_14,
+    merphy_sleep_15,
+    merphy_sleep_16,
+];
+
+const merphy_left = [
+    merphy_left_1,
+    merphy_left_2,
+    merphy_left_3
+];
+
+const merphy_right = [
+    merphy_right_1,
+    merphy_right_2,
+    merphy_right_3
+];
 
 let SEED = 2;
 
@@ -29,18 +105,46 @@ function random() {
 }
 
 
-class Player {
+export class Player {
     constructor(x,y) {
         this.x = x;
         this.y = y;
         this.dir = null;
         this.EMPTIES = [];
-
+        this.state = 0;
         this.force = false;
-    }
+        this.time_to_sleep = false;
+        this.pic_sequence = merphy_left;
+        this.img = new Image();
+        this.img.src = sprite;
+        this.img.width = 100;
+        this.img.height = 32;
+        this.merphy_state = STOP;
+        this.dy = 0;
 
-    static off = false;
-    static flag = true;
+
+        // document.body.appendChild(this.img);
+
+    // const canvas = document.getElementById("canvas");
+    // canvas.style.border = '1px solid black'
+    //   const ctx = canvas.getContext("2d");
+     
+    //   this.img.addEventListener("load", (e) => {
+    //     ctx.drawImage(
+    //         this.img,
+    //         64,
+    //         0,
+    //         32,
+    //         32,
+    //         32,
+    //         32,
+    //         32,
+    //         32
+    //       );
+    //   });
+        
+     
+    }
 
     check(nxt, world) {
         return [EMPTY, '*', '.'].includes(world[nxt.y][nxt.x]);
@@ -54,32 +158,95 @@ class Player {
         return world[this.y][this.x+1] === ROCK && world[this.y][this.x+2] === EMPTY && this.force;
     }
 
+    changePic(seconds) {
+
+        if( this.state < 2) this.state +=1;
+        else this.state = 0;
+
+        switch (this.merphy_state) {
+            case STOP:
+                this.dy = 1;
+                break;
+            case MOVE_LEFT:
+                this.dy = 0;
+                break;
+            case MOVE_RIGHT:
+                this.dy = 2;
+                break;
+            default:
+                this.dy = 0;
+                break;
+        }
+        
+        // switch (this.merphy_state) {
+        //     case STOP:
+        //         // if (seconds % 10 === 0) this.time_to_sleep = true;
+        //         // if(this.time_to_sleep && this.state < 12) this.state +=1;
+        //         // else { this.state = 0; this.time_to_sleep = false; }
+        //         this.img.src = merphy_sleep[0];
+        //         break;
+        //     case MOVE_LEFT:
+        //         if( this.state < 2) this.state +=1;
+        //         else this.state = 0;
+        //         this.img.src = merphy_left[this.state];
+        //         this.pic_sequence = merphy_left;
+        //         break;
+        //     case MOVE_RIGHT:
+        //         if( this.state < 2) this.state +=1;
+        //         else this.state = 0;
+        //         this.img.src = merphy_right[this.state];
+        //         this.pic_sequence = merphy_right;
+        //         break;
+        //     case FORCE_LEFT:
+        //         this.img.src = meprhy_force_left;
+        //         break;
+        //     case FORCE_RIGHT:
+        //         this.img.src = meprhy_force_right;
+        //         break;
+        //     case MOVE_UP:
+        //     case MOVE_DOWN:
+        //         if( this.state < 2) this.state +=1;
+        //         else this.state = 0;
+        //         this.img.src = this.pic_sequence[this.state];
+        //         break;
+        // }
+
+    }
+
     changeState(world) {
         if (Player.off) return false;
+        
         switch  (this.dir) {
             case UP:
                 if (this.check({x: this.x, y: this.y - 1}, world)) {
+                    this.merphy_state = MOVE_UP;
                     this.y -= 1;
                     if (!this.EMPTIES.some(point => point.x === this.x && point.y === this.y)) this.EMPTIES.push({ x: this.x, y: this.y});
                 }
+                else this.merphy_state = STOP;
                 break;
             case DOWN:
                 if (this.check({x: this.x, y: this.y + 1}, world)) {
                     this.y += 1;
+                    this.merphy_state = MOVE_DOWN;
                     if (!this.EMPTIES.some(point => point.x === this.x && point.y === this.y)) this.EMPTIES.push({ x: this.x, y: this.y});
-                }
+                } else this.merphy_state = STOP;
                 break;
             case LEFT:
                 if (this.check({x: this.x - 1, y: this.y}, world)) {
+                    this.merphy_state = MOVE_LEFT;
                     this.x -= 1;
                     if (!this.EMPTIES.some(point => point.x === this.x && point.y === this.y)) this.EMPTIES.push({ x: this.x, y: this.y});
                 } else if (this.check_force_move_left(world)) this.x -= 1;
+                else this.merphy_state = STOP;
                 break;
             case RIGHT:
                 if (this.check({x: this.x + 1, y: this.y}, world)) {
+                    this.merphy_state = MOVE_RIGHT;
                     this.x += 1;
                     if (!this.EMPTIES.some(point => point.x === this.x && point.y === this.y)) this.EMPTIES.push({ x: this.x, y: this.y});
                 } else if (this.check_force_move_right(world)) this.x += 1;
+                else this.merphy_state = STOP;
                 break;
         }
 
@@ -87,11 +254,14 @@ class Player {
 
 }
 
-class Predator {
+Player.off = false;
+Player.flag = true;
+
+export class Predator {
 
     constructor(y,x) {
         this.phases = '/-\\|';
-        this.phase = 0;
+        this.state = 0;
         this.show = '/';
         this.x = x;
         this.y = y;
@@ -102,13 +272,16 @@ class Predator {
         this.dir = DOWN;
         this.flag = false;
         this.still_alive = true;
+        this.img = new Image();
+        this.img.src = sprite3;
+        this.char = SCISSORS;
     }
 
 
     looking_around(world) {
-        this.dir_left = world[this.y][this.x-1] === EMPTY;
+        this.dir_left = world[this.y][this.x-1] === EMPTY && !"*O".includes(world[this.y-1][this.x-1]);
         this.dir_up = world[this.y-1][this.x] === EMPTY;
-        this.dir_right = world[this.y][this.x+1] === EMPTY;
+        this.dir_right = world[this.y][this.x+1] === EMPTY && !"*O".includes(world[this.y-1][this.x+1]);
         this.dir_down = world[this.y+1][this.x] === EMPTY;
     }
 
@@ -160,7 +333,7 @@ class Predator {
     }
 
     changeState(world) {
-        this.phase = this.phase < 3 ? this.phase + 1 : 0;
+        this.state = this.state < 7 ? this.state + 1 : 0;
         this.show = this.phases[this.phase];
         this.flag = !this.flag;
         if (this.find_rock(world) || this.no_way())
@@ -193,35 +366,13 @@ class Predator {
 
 }
 
-class Bomb {
-    constructor(x,y) {
-        this.x = x;
-        this.y = y;
-
-        this.STARS = [];
-
-        this.STARS.push(new Star(this.y, this.x));
-        this.STARS.push(new Star(this.y-1, this.x));
-        this.STARS.push(new Star(this.y+1, this.x));
-        this.STARS.push(new Star(this.y, this.x-1));
-        this.STARS.push(new Star(this.y, this.x+1));
-        this.STARS.push(new Star(this.y-1, this.x-1));
-        this.STARS.push(new Star(this.y-1, this.x+1));
-        this.STARS.push(new Star(this.y+1, this.x-1));
-        this.STARS.push(new Star(this.y+1, this.x+1));
-
-
-    }
-}
-
-class Rock {
+export class Rock {
     constructor(y,x) {
         this.x = x;
         this.y = y;
         this.killer = false;
         this.falling = false;
     }
-
 
     check_way_down(world) {
         if (this.falling && world[this.y+1][this.x] === PLAYER) { this.killer = true; Player.off = true; }
@@ -231,17 +382,17 @@ class Rock {
     }
 
     move_possible(world) {
-        return ['+', 'O', '*'].includes(world[this.y+1][this.x])
+        return ['+', 'O', '*'].includes(world[this.y+1][this.x]) && !['O', '*'].includes(world[this.y-1][this.x])
     }
 
     check_way_left(world) {
         this.falling = true;
-        return world[this.y][this.x-1] === EMPTY && world[this.y+1][this.x-1] === EMPTY;
+        return world[this.y][this.x-1] === EMPTY && world[this.y+1][this.x-1] === EMPTY && !['O', '*'].includes(world[this.y-1][this.x-1]);
     }
 
     check_way_right(world) {
         this.falling = true;
-        return world[this.y][this.x+1] === EMPTY && world[this.y+1][this.x+1] === EMPTY;
+        return world[this.y][this.x+1] === EMPTY && world[this.y+1][this.x+1] === EMPTY && !['O', '*'].includes(world[this.y-1][this.x+1]);
     }
 
     check_force_move_left(world) {
@@ -272,7 +423,7 @@ class Rock {
     }
 }
 
-class Star {
+export class Star {
     constructor(y,x) {
         this.x = x;
         this.y = y;
@@ -280,8 +431,6 @@ class Star {
         this.falling = false;
         this.killer = false;
     }
-
-    static scores = 0;
 
     check_way_down(world) {
         if (this.falling && world[this.y+1][this.x] === PLAYER) { this.killer = true; Player.off = true; }
@@ -291,17 +440,17 @@ class Star {
     }
 
     move_possible(world) {
-        return world[this.y+1] && ['+', 'O', '*'].includes(world[this.y+1][this.x])
+        return world[this.y+1] && ['+', 'O', '*'].includes(world[this.y+1][this.x]) && !['O', '*'].includes(world[this.y-1][this.x])
     }
 
     check_way_left(world) {
         this.falling = true;
-        return world[this.y][this.x-1] === EMPTY && world[this.y+1][this.x-1] === EMPTY;
+        return world[this.y][this.x-1] === EMPTY && world[this.y+1][this.x-1] === EMPTY && !['O', '*'].includes(world[this.y-1][this.x-1]);
     }
 
     check_way_right(world) {
         this.falling = true;
-        return world[this.y][this.x+1] === EMPTY && world[this.y+1][this.x+1] === EMPTY;
+        return world[this.y][this.x+1] === EMPTY && world[this.y+1][this.x+1] === EMPTY && !['O', '*'].includes(world[this.y-1][this.x+1]);
     }
 
     changeState(world) {
@@ -317,8 +466,10 @@ class Star {
     }
 }
 
+Star.scores = 0;
 
-class World {
+
+export class World {
 
     constructor(height, width, predators_q, rocks, stars, breaks) {
         this.rand_positions = [];
@@ -326,7 +477,18 @@ class World {
         this.width = width;
         this.minutes = 0;
         this.seconds = 0;
+        this.img = new Image();
+        this.img.src = sprite2;
         this.timer = null;
+        this.pause = false;
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = WIDTH * BLOCK_WIDTH;
+        this.canvas.height = HEIGHT * BLOCK_WIDTH;
+        this.ctx = this.canvas.getContext("2d");
+        
+        
+        document.body.appendChild(this.canvas);
+
         //Breaks
         this.BREAKS = [];
         for (let i = 0; i < breaks; i++) {
@@ -347,6 +509,7 @@ class World {
         for (let i = 0; i < rocks; i++) {
             const rip = this.rndomizer(); //predator init position
             this.ROCKS.push(new Rock(rip.y, rip.x));
+            this.ROCKS.sort((a,b) => a.y - b.y);
         }
 
         //Stars
@@ -354,6 +517,7 @@ class World {
         for (let i = 0; i < stars; i++) {
             const rip = this.rndomizer(); //predator init position
             this.STARS.push(new Star(rip.y, rip.x));
+            this.STARS.sort((a,b) => a.y - b.y);
         }
 
         this.GROUND = [];
@@ -370,6 +534,8 @@ class World {
         this.world = this.generate();
 
         this.startTimer();
+
+
     }
 
     startTimer() {
@@ -411,7 +577,7 @@ class World {
 
         this.player.EMPTIES.forEach(P => WORLD[P.y][P.x] = EMPTY);
 
-        this.PREDATORS.forEach(P => WORLD[P.y][P.x] = P.show);
+        this.PREDATORS.forEach(P => WORLD[P.y][P.x] = P);
 
         this.ROCKS.forEach(R => WORLD[R.y][R.x] = ROCK);
 
@@ -425,12 +591,12 @@ class World {
     rndomizer() {
 
         let rand_x = Math.floor(random() * (this.width - 2)) + 1;
-        let rand_y = Math.floor(random() * (this.width - 2)) + 1;
+        let rand_y = Math.floor(random() * (this.height - 2)) + 1;
         let pos = { x: rand_x, y: rand_y };
 
         while(this.rand_positions.some(el => el.x === pos.x && el.y === pos.y)) {
             rand_x = Math.floor(random() * (this.width - 2)) + 1;
-            rand_y = Math.floor(random() * (this.width - 2)) + 1;
+            rand_y = Math.floor(random() * (this.height - 2)) + 1;
             pos = { x: rand_x, y: rand_y };
         }
 
@@ -440,17 +606,35 @@ class World {
     }
 
     print() {
+        this.ctx.fillStyle = "black";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+
+        this.world.forEach((row,i) => {
+            row.forEach((el,j) => { 
+                if (el === WALL) { 
+                    this.ctx.drawImage(this.img, 0, 0, BLOCK_WIDTH, BLOCK_WIDTH, j*BLOCK_WIDTH, i*BLOCK_WIDTH,BLOCK_WIDTH, BLOCK_WIDTH);
+                } else if (el === BREAK) { 
+                    this.ctx.drawImage(this.img, BLOCK_WIDTH*2, 0, BLOCK_WIDTH, BLOCK_WIDTH, j*BLOCK_WIDTH, i*BLOCK_WIDTH,BLOCK_WIDTH, BLOCK_WIDTH);
+                } else if (el === ROCK) { 
+                    this.ctx.drawImage(this.img, BLOCK_WIDTH*3, 0, BLOCK_WIDTH, BLOCK_WIDTH, j*BLOCK_WIDTH, i*BLOCK_WIDTH,BLOCK_WIDTH, BLOCK_WIDTH);
+                } else if (el === FOOD) { 
+                    this.ctx.drawImage(this.img, BLOCK_WIDTH, 0, BLOCK_WIDTH, BLOCK_WIDTH, j*BLOCK_WIDTH, i*BLOCK_WIDTH,BLOCK_WIDTH, BLOCK_WIDTH);
+                } else if (el === GROUND) { 
+                    this.ctx.drawImage(this.img, BLOCK_WIDTH*4, 0, BLOCK_WIDTH, BLOCK_WIDTH, j*BLOCK_WIDTH, i*BLOCK_WIDTH,BLOCK_WIDTH, BLOCK_WIDTH);
+                } else if (el.char === SCISSORS) {
+                    this.ctx.drawImage(el.img, BLOCK_WIDTH * el.state, (DIRS.indexOf(el.dir) + 1) * BLOCK_WIDTH, BLOCK_WIDTH, BLOCK_WIDTH, j*BLOCK_WIDTH, i*BLOCK_WIDTH,BLOCK_WIDTH, BLOCK_WIDTH);
+                } else if (el === 'A') {
+                    this.ctx.drawImage(this.player.img, this.player.state * BLOCK_WIDTH, this.player.dy * BLOCK_WIDTH, BLOCK_WIDTH, BLOCK_WIDTH, j*BLOCK_WIDTH, i*BLOCK_WIDTH,BLOCK_WIDTH, BLOCK_WIDTH);
+                }
+            })
+        })
+
         return this.world.map(row => row.join(EMPTY)).join('\n') + '\nscores: ' + Star.scores + '  Time: ' + this.getTime();
     }
 
     check_predators() {
-        this.PREDATORS.forEach(predator => {
-            if (!predator.still_alive) {
-                const boom = new Bomb(predator.x, predator.y);
-                this.STARS = this.STARS.concat(boom.STARS);
-            }
-        });
-
+       
         this.PREDATORS = this.PREDATORS.filter(predator => predator.still_alive);
     }
 
@@ -464,8 +648,7 @@ class World {
 
     check_player() {
         if (Player.off && Player.flag) {
-            const boom = new Bomb(this.player.x, this.player.y);
-            this.STARS = this.STARS.concat(boom.STARS);
+            
             Player.flag = false;
         } else if (Player.flag) {
             this.world[this.player.y][this.player.x] = PLAYER;
@@ -481,6 +664,7 @@ class World {
         this.ROCKS.forEach(ROCK => ROCK.changeState(this.world, this.player.force));
         this.STARS.forEach(STAR => STAR.changeState(this.world));
         this.player.changeState(this.world);
+        this.player.changePic(this.seconds);
         this.check_predators();
         this.check_food();
         this.check_rocks();
@@ -489,5 +673,6 @@ class World {
     }
 
 }
+
 
 

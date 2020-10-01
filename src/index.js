@@ -1,37 +1,75 @@
 //width: 460px
 //height: 470px
+import "./styles/styles.css"
+
+import { World, Player, Star, WIDTH, HEIGHT, PREDATOR_QUANTITY, ROCKS_QUANTITY, STARS_QUANTITY, BREAKS_QUANTITY } from "./world"
+let frames = 0;
 const show = document.createElement('pre');
+window.prevStates = [];
 show.style.margin = 0;
 const main = document.createElement('div');
 document.body.style.display = 'flex';
+document.body.style.alignItems = 'center';
+document.body.style.justifyContent = 'center';
 main.style.margin = 'auto';
+main.style.fontFamily = 'Roboto';
 main.style.position = 'relative';
 main.style.width = '460px';
 main.style.height = '470px';
-main.appendChild(show);
+main.id = 'main';
+// main.appendChild(show);
 document.body.appendChild(main);
-
-let THE_WORLD = null;
+window.pause = false;
+window.THE_WORLD = null;
 let interval = null;
 const startGame = () => {
     THE_WORLD = new World(HEIGHT, WIDTH, PREDATOR_QUANTITY, ROCKS_QUANTITY, STARS_QUANTITY, BREAKS_QUANTITY);
     Player.off = false;
     Player.flag = true;
     Star.scores = 0;
-
-    interval = setInterval(() => {
-        THE_WORLD.tick();
-        show.innerText = THE_WORLD.print();
-    },100);
+    show.innerText = THE_WORLD.print();
+    prevStates.push(THE_WORLD.print());
+    main.style.display = 'none';
+    // interval = setInterval(() => {
+        // if (!window.pause) {
+            // THE_WORLD.tick();
+            // show.innerText = THE_WORLD.print();
+            // prevStates.push(THE_WORLD.print())
+            // if (prevStates.length > 10) prevStates = prevStates.slice(1, prevStates.length)
+            
+        // }
+    // },100);
+    draw();
 }
 
-const stopGame = () => {
+const draw = () => {
+    
+      if (frames % 5 === 0) {
+        if (!window.pause) {
+            THE_WORLD.tick();
+            // show.innerText = THE_WORLD.print();
+            prevStates.push(THE_WORLD.print())
+            if (prevStates.length > 10) prevStates = prevStates.slice(1, prevStates.length)
+            
+        }
+      }  
+        
+    
+        
+    window.requestAnimationFrame(draw);   
+   
+    frames++;
+}
+
+export const stopGame = () => {
     THE_WORLD.stopTimer(); 
-    clearInterval(interval);
+    // clearInterval(interval);
     start_screen.style.display = 'flex';
 
     scores.innerHTML = 'Your score: ' + Star.scores + '<br>' + 'Your time: ' + THE_WORLD.getTime();
     start_screen.appendChild(scores);
+    document.body.removeChild(THE_WORLD.canvas);
+    main.style.display = 'block';
 }
 
 const start_screen = document.createElement('div');
@@ -65,8 +103,6 @@ const scores = document.createElement('div');
 scores.style.fontFamily = 'Tahoma';
 scores.style.fontSize = '15px';
 scores.style.margin = 'auto';
-
-
 
 
 
