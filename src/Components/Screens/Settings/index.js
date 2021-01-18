@@ -26,7 +26,7 @@ filtered.forEach((setting) => {
   setting_block.style.backgroundSize = '100%';
   setting_block.style.backgroundImage = `url(${setting.initial ? setting.img_on : setting.img_off})`;
   
-  setting_block.onclick = (e) => {
+  setting_block.addEventListener(isMobile ? 'touchstart' : 'click',(e) => {
     store.dispatch({ type: setting.action });
     const { settings } = store.getState();
     if (setting.name === 'Music') {
@@ -34,8 +34,7 @@ filtered.forEach((setting) => {
     } else if (setting.name === 'Orientation') {
       setting_block.style.backgroundImage = `url(${settings.orientation ? setting.img_on : setting.img_off})`;
     }
-
-  }
+  });
 
   Settings.appendChild(setting_block);
 });
@@ -50,8 +49,8 @@ close.style.right = '10px';
 close.style.fontSize = '40px'
 close.style.lineHeight = '20px';
 
-close.onclick = () => {
+close.addEventListener(isMobile ? 'touchstart' : 'click',() => {
   document.body.removeChild(Settings);
-}
+});
 
 Settings.appendChild(close);

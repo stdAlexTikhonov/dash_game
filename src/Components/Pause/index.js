@@ -1,3 +1,4 @@
+import { isMobile } from "../../helpers";
 import { draw, audio, store } from "../../index";
 export const Pause = document.createElement('i');
 Pause.className = "material-icons waves-effect waves-light";
@@ -5,7 +6,7 @@ Pause.innerHTML = 'p';
 Pause.style.color = 'white';
 
 
-Pause.onclick = _ => {
+Pause.addEventListener(isMobile ? 'touchstart' : 'click',_ => {
   const { settings } = store.getState();
   if (window.pause) {
     window.pause = false;
@@ -19,4 +20,4 @@ Pause.onclick = _ => {
     window.cancelAnimationFrame(window.myReq);
   }
 
-}
+})

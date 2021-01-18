@@ -1,8 +1,7 @@
 import { audio, startGame, store } from "../../../index";
 import { ScoresComponent } from "../../Scores";
-import { checkbox, Settings } from "../Settings";
-import { BackButton } from "../../BackButton";
-import { settings } from "../Settings/settings";
+import { Settings } from "../Settings";
+import { isMobile } from "../../../helpers";
 
 
 export const GameScreen = document.createElement('div');
@@ -38,12 +37,12 @@ GameScreen.appendChild(start_btn);
 GameScreen.appendChild(settings_btn);
 GameScreen.appendChild(ScoresComponent);
 
-start_btn.onclick = () => {
+start_btn.addEventListener(isMobile ? 'touchstart' : 'click',() => {
     const { settings } = store.getState();
     startGame();
     settings.music && audio.play();
-}
+});
 
-settings_btn.onclick = () => {
+settings_btn.addEventListener(isMobile ? 'touchstart' : 'click', () => {
     document.body.appendChild(Settings);
-}
+});

@@ -5,8 +5,6 @@ import background_audio from './assets/audio/back.mp3';
 import { World } from "./world";
 import { Player } from "./player"; 
 import { GameScreen } from "./Components/Screens/GameScreen";
-import { MainScreen } from "./Components/Screens/MainScreen";
-import { LevelsScreen } from "./Components/Screens/Levels";
 import { ScoresComponent, Scores } from "./Components/Scores";
 import { createStore } from "./store";
 import { appReducer } from "./reducers";
