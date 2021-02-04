@@ -1,5 +1,5 @@
 import { 
-    ROCK, SCISSORS, EMPTY, LEFT, RIGHT,
+    ROCK, SCISSORS, EMPTY, LEFT, RIGHT, ELECTRON,
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
     MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT
 } from "./constants"
@@ -32,7 +32,7 @@ export class Player {
     }
 
     check_predator(nxt, world) {
-        return world[nxt.y][nxt.x].char === SCISSORS;
+        return world[nxt.y][nxt.x].char === SCISSORS || world[nxt.y][nxt.x].char === ELECTRON;
     }
 
     check_force_move_left(world) {
