@@ -1,4 +1,4 @@
-export const MAP_SIZE_CONSTANT = 1;
+export const MAP_SIZE_CONSTANT = 2;
 export const WIDTH = 30 * MAP_SIZE_CONSTANT;
 export const HEIGHT = 18 * MAP_SIZE_CONSTANT;
 export const VIEWPORT_WIDTH = 11;
@@ -29,10 +29,10 @@ export const ELECTRON = "::";
 export const elements = [WALL, GROUND, ROCK, BREAK, FOOD];
 
 export const PREDATOR_QUANTITY = 3 * MAP_SIZE_CONSTANT;//+0
-export const ROCKS_QUANTITY = 10 * MAP_SIZE_CONSTANT;//+0
-export const STARS_QUANTITY = 10 * MAP_SIZE_CONSTANT;//+0
-export const BREAKS_QUANTITY = 10 * MAP_SIZE_CONSTANT;//+0
-export const GROUND_QUANTITY = 300 * MAP_SIZE_CONSTANT;//+0
+export const ROCKS_QUANTITY = 10 * MAP_SIZE_CONSTANT * 2;//+0
+export const STARS_QUANTITY = 10 * MAP_SIZE_CONSTANT * 2;//+0
+export const BREAKS_QUANTITY = 10 * MAP_SIZE_CONSTANT * 2;//+0
+export const GROUND_QUANTITY = 300 * MAP_SIZE_CONSTANT * 2;//+0
 
 
 export const STOP = "STOP";
