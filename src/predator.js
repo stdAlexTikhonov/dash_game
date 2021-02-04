@@ -1,14 +1,15 @@
 import { 
     EMPTY, PLAYER, UP, DOWN,
     RIGHT, LEFT,
-    SCISSORS, ROCK, FOOD
+    SCISSORS, ROCK, FOOD, ELECTRON
 } from "./constants";
 import sprite3 from "./assets/images/sprite3.png";
+import electron from "./assets/images/electron.png";
 import { Player } from "./player";
 
 export class Predator {
 
-    constructor(y,x) {
+    constructor(y,x, electron_flag) {
         this.state = 0;
         this.x = x;
         this.y = y;
@@ -19,8 +20,8 @@ export class Predator {
         this.dir = DOWN;
         this.still_alive = true;
         this.img = new Image();
-        this.img.src = sprite3;
-        this.char = SCISSORS;
+        this.img.src = electron_flag ? electron : sprite3;
+        this.char = electron_flag ? ELECTRON : SCISSORS;
         this.prev_dir = null;
         this.animation = true;
 
