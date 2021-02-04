@@ -23,6 +23,7 @@ export const EMPTY = ' ';
 export const SCISSORS = 'X';
 export const EXIT = 'E';
 export const FIRE = 'F';
+export const PART = 'P';
 
 export const elements = [WALL, GROUND, ROCK, BREAK, FOOD];
 
