@@ -4,7 +4,7 @@ import "./user";
 import { 
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
-    WALL, GROUND, EMPTY, SCISSORS, elements,
+    WALL, GROUND, EMPTY, SCISSORS, elements, MAP_SIZE_CONSTANT,
     GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP, PART, ELECTRON
 } from "./constants";
 import { sleep } from "./helpers";
@@ -138,68 +138,6 @@ export class World {
 
         };
 
-        // this.canvas.onmousedown = e1 => {
-        //     this.mouse_pressed = true;
-        // }
-
-        // this.canvas.onmouseup = e1 => {
-        //     this.mouse_pressed = false;
-        //     this.selected_values = [];
-        // }
-
-        // this.canvas.onmousemove = (e) => {
-        //     if (this.mouse_pressed && window.pause) {
-        //         const rect = e.target.getBoundingClientRect();
-        //         const x = e.clientX - rect.left; //x position within the element.
-        //         const y = e.clientY - rect.top;  //y position within the element.
-        //         const _x = Math.floor(x/BLOCK_WIDTH);
-        //         const _y = Math.floor(y/BLOCK_WIDTH);
-    
-        //         let val = _x + "_" + _y;
-                
-        //         if (!this.selected_values.includes(val)) { 
-        //             this.selected_values = [...this.selected_values, val];
-        //             this.GROUND = this.GROUND.filter((val) => !(val.x === _x && val.y === _y));
-        //             this.BREAKS = this.BREAKS.filter((val) => !(val.x === _x && val.y === _y));
-        //             this.ROCKS = this.ROCKS.filter((val) => !(val.x === _x && val.y === _y));
-        //             this.STARS = this.STARS.filter((val) => !(val.x === _x && val.y === _y));
-        //             this.WALLS = this.WALLS.filter((val) => !(val.x === _x && val.y === _y));
-        //             this.PREDATORS = this.PREDATORS.filter((val) => !(val.x === _x && val.y === _y));
-        //             switch(this.selected_value) {
-        //                 case GROUND:
-        //                     this.GROUND.push({ x: _x, y: _y});
-        //                     break;
-        //                 case BREAK:
-        //                     this.BREAKS.push({ x: _x, y: _y});
-        //                     break;
-        //                 case ROCK:
-        //                     this.ROCKS.push(new Rock(_y, _x));
-        //                     break;
-        //                 case FOOD:
-        //                     this.STARS.push(new Star(_y, _x));
-        //                     break;
-        //                 case WALL:
-        //                     this.WALLS.push({ x: _x, y: _y });
-        //                 case SCISSORS:
-        //                     this.PREDATORS.push(new Predator(_y, _x));
-        //                     break;   
-        //                 case PLAYER:
-        //                     this.player = new Player(_y,_x);
-        //                     this.player.img.addEventListener('load', e => this.print());
-        //                     break; 
-        //             }
-                    
-        //             this.world = this.generate();
-        //             this.world[this.player.y][this.player.x] = PLAYER;
-        //             this.print();
-
-        //         }
-        //     }
-            
-        // }
-        
-
-
 
         const createDiv = (img, index) => {
             const div = document.createElement('div');
@@ -298,7 +236,7 @@ export class World {
 
         //Electrons
         this.ELECTRONS = [];
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < MAP_SIZE_CONSTANT; i++) {
             const pip = this.rndomizer(); //predator init position
             this.ELECTRONS.push(new Predator(pip.y, pip.x, true));
         }
