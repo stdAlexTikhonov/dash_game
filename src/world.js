@@ -5,7 +5,7 @@ import {
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
     WALL, GROUND, EMPTY, SCISSORS, elements,
-    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP, PART
+    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP, PART, ELECTRON
 } from "./constants";
 import { sleep } from "./helpers";
 import { Player } from "./player";
@@ -296,6 +296,13 @@ export class World {
             this.PREDATORS.push(new Predator(pip.y, pip.x));
         }
 
+        //Electrons
+        this.ELECTRONS = [];
+        for (let i = 0; i < 1; i++) {
+            const pip = this.rndomizer(); //predator init position
+            this.ELECTRONS.push(new Predator(pip.y, pip.x, true));
+        }
+
 
         //Rocks
         this.ROCKS = [];
@@ -447,6 +454,8 @@ export class World {
 
         this.PREDATORS.forEach(P => WORLD[P.y][P.x] = P);
 
+        this.ELECTRONS.forEach(P => WORLD[P.y][P.x] = P);
+
         this.ROCKS.forEach(R => WORLD[R.y][R.x] = R);
 
         this.STARS.forEach(S => WORLD[S.y][S.x] = S);
@@ -550,6 +559,24 @@ export class World {
                                 }
                             this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, DIRS.indexOf(el.dir) * BLOCK_WIDTH, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
+                        case ELECTRON:
+                            if (el.animation)
+                                switch(el.dir) {
+                                    case RIGHT:
+                                        pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case LEFT:
+                                        pos_x -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case UP:
+                                        pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case DOWN:
+                                        pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                }
+                            this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
+                            break;
                         case GROUND:
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
@@ -637,6 +664,32 @@ export class World {
         this.PREDATORS = this.PREDATORS.filter(predator => predator.still_alive);
     }
 
+    check_electrons() {
+        const died = this.ELECTRONS.find(rock => !rock.still_alive);
+        if (died) {
+            this.STARS.push(new Star(died.y, died.x));
+            this.STARS.push(new Star(died.y+1, died.x));
+            this.STARS.push(new Star(died.y-1, died.x));
+            this.STARS.push(new Star(died.y, died.x+1));
+            this.STARS.push(new Star(died.y, died.x-1));
+            this.STARS.push(new Star(died.y+1, died.x-1));
+            this.STARS.push(new Star(died.y+1, died.x+1));
+            this.STARS.push(new Star(died.y-1, died.x-1));
+            this.STARS.push(new Star(died.y - 1, died.x + 1));
+
+            const arr = [ {x: died.x, y: died.y }, {x: died.x, y: died.y + 1 }, {x: died.x, y: died.y -1 }, {x: died.x + 1, y: died.y },{x: died.x - 1, y: died.y }, {x: died.x-1, y: died.y+1 },{x: died.x + 1, y: died.y + 1},{x: died.x -1, y: died.y -1 },{x: died.x+1, y: died.y -1 }]
+            
+            this.GROUND = this.GROUND.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.ROCKS = this.ROCKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            // this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
+        }
+        this.ELECTRONS = this.ELECTRONS.filter(predator => predator.still_alive);
+    }
+
+
     check_food() {
         this.STARS = this.STARS.filter(star => star.still_here);
     }
@@ -665,6 +718,7 @@ export class World {
 
     tick() {
         this.PREDATORS.forEach(PREDATOR => PREDATOR.changeState(this.world));
+        this.ELECTRONS.forEach(PREDATOR => PREDATOR.changeState(this.world));
         this.ROCKS.forEach(ROCK => ROCK.changeState(this.world, this.player));
         this.STARS.forEach(STAR => STAR.changeState(this.world));
         this.EXPLOSIONS.forEach(EXP => EXP.changeState());
@@ -678,6 +732,7 @@ export class World {
         this.world = this.generate();
         this.check_player();
         this.check_predators();
+        this.check_electrons();
         this.check_rocks();
         this.check_explosions();
     }
