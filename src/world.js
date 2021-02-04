@@ -5,7 +5,7 @@ import {
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
     WALL, GROUND, EMPTY, SCISSORS, elements,
-    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP
+    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP, PART
 } from "./constants";
 import { sleep } from "./helpers";
 import { Player } from "./player";
@@ -23,6 +23,15 @@ import break_ from "./assets/images/break.png";
 import ground from "./assets/images/ground.png";
 import exit from "./assets/images/exit.png";
 
+import a1 from "./assets/images/a1.png";
+import a2 from "./assets/images/a2.png";
+import a3 from "./assets/images/a3.png";
+import a4 from "./assets/images/a4.png";
+import a5 from "./assets/images/a5.png";
+import a6 from "./assets/images/a6.png";
+
+const parts = [a1, a2, a3, a4, a5, a6];
+
 const wall_img = new Image();
 wall_img.src = wall;
 
@@ -35,7 +44,11 @@ ground_img.src = ground;
 const exit_img = new Image();
 exit_img.src = exit;
 
-
+const parts_transformed = parts.map(source => {
+    const img = new Image();
+    img.src = source;
+    return img;
+})
 
 
 let seed = SEED;
@@ -57,7 +70,6 @@ export const generateUID = () => {
 export class World {
 
     constructor(height, width, predators_q, rocks, stars, breaks, ip, players_quantity) {
-
         this.rand_positions = [];
         this.height = height;
         this.width = width;
@@ -259,6 +271,12 @@ export class World {
         //WALLS
         this.WALLS = [];
 
+        this.PARTS = [];
+        for (let i = 0; i < parts.length; i++) {
+            const rip = this.rndomizer(); //predator init position
+            this.PARTS.push({y: rip.y, x: rip.x, char: PART, img: parts_transformed[i] });
+        }
+
         const pp = this.rndomizer();//player position
 
         this.player = new Player(pp.y,pp.x);
@@ -437,6 +455,8 @@ export class World {
 
         this.WALLS.forEach(W => WORLD[W.y][W.x] = W);
 
+        this.PARTS.forEach(P => WORLD[P.y][P.x] = P);
+
         this.PLAYERS.forEach(P => WORLD[P.y][P.x] = P);
         
         this.EXPLOSIONS.forEach(EXP => WORLD[EXP.y][EXP.x] = EXP);
@@ -534,6 +554,7 @@ export class World {
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case WALL:
+                        case PART:
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case BREAK:
@@ -610,7 +631,7 @@ export class World {
             this.ROCKS = this.ROCKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
-
+            this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
         }
         this.PREDATORS = this.PREDATORS.filter(predator => predator.still_alive);
