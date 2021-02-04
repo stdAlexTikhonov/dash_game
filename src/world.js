@@ -29,8 +29,12 @@ import a3 from "./assets/images/a3.png";
 import a4 from "./assets/images/a4.png";
 import a5 from "./assets/images/a5.png";
 import a6 from "./assets/images/a6.png";
+import a7 from "./assets/images/a7.png";
+import a8 from "./assets/images/a8.png";
+import a9 from "./assets/images/a9.png";
+import a10 from "./assets/images/a10.png";
 
-const parts = [a1, a2, a3, a4, a5, a6];
+const parts = [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10];
 
 const wall_img = new Image();
 wall_img.src = wall;
