@@ -1,7 +1,7 @@
 import { 
     ROCK, SCISSORS, EMPTY, LEFT, RIGHT, ELECTRON,
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
-    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT
+    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK
 } from "./constants"
 
 import sprite from './assets/images/sprite.png';
@@ -36,11 +36,13 @@ export class Player {
     }
 
     check_force_move_left(world) {
-        return world[this.y][this.x-1].char === ROCK && world[this.y][this.x-2].char === EMPTY && this.force;
+        const items = [ROCK, ORANGE_DISK];
+        return items.includes(world[this.y][this.x-1].char) && world[this.y][this.x-2].char === EMPTY && this.force;
     }
 
     check_force_move_right(world) {
-        return world[this.y][this.x+1].char === ROCK && world[this.y][this.x+2].char === EMPTY && this.force;
+        const items = [ROCK, ORANGE_DISK];
+        return items.includes(world[this.y][this.x+1].char) && world[this.y][this.x+2].char === EMPTY && this.force;
     }
 
     check_exit_right(world) {
