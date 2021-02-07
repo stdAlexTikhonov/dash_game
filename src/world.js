@@ -668,6 +668,10 @@ export class World {
         this.STARS = this.STARS.filter(star => star.still_here);
     }
 
+    check_bombs() {
+        this.BOMBS = this.BOMBS.filter(bomb => bomb.still_here);
+    }
+
     check_rocks() {
         this.ROCKS = this.ROCKS.filter(rock => !rock.killer);
     }
@@ -741,6 +745,7 @@ export class World {
         this.player.changeState(this.world);
         this.player.changePic();
         this.check_food();
+        this.check_bombs();
         this.world = this.generate();
         this.check_player();
         this.check_predators();
