@@ -73,6 +73,7 @@ export class Disk {
           this.right = true;
       }
       else {
+        if (this.falling) this.still_alive = false;
         this.falling = false;
       }
 
