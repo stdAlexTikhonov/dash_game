@@ -47,8 +47,8 @@ export class Disk {
     }
   
     find_death(world) {
-        const killers = [ROCK, FOOD, ORANGE_DISK];
-        const pt1 = killers.includes(world[this.y - 1][this.x].char) && world[this.y - 1][this.x].falling;
+        const killers = [ROCK, FOOD];
+        const pt1 = killers.includes(world[this.y - 1][this.x].char);
         const pt2 = killers.includes(world[this.y][this.x].char);
         return pt1;
     }
