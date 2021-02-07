@@ -6,6 +6,7 @@ import { World } from "./world";
 import { Player } from "./player"; 
 import { GameScreen } from "./Components/Screens/GameScreen";
 import { ScoresComponent, Scores } from "./Components/Scores";
+import { Bombs } from "./Components/Bombs";
 import { createStore } from "./store";
 import { appReducer } from "./reducers";
 import { TOGGLE_ORIENTATION } from "./actions/settingsActions";
@@ -16,23 +17,26 @@ import {
     ROCKS_QUANTITY, STARS_QUANTITY,
     BREAKS_QUANTITY, STEPS
 } from "./constants";
+import { RESET_BOMBS } from "./actions/bombActions";
 
 export const audio = new Audio(background_audio);
 export const store = createStore(appReducer);
 
 
 store.subscribe(() => {
-    const { settings, score } = store.getState();
+    const { settings, score, bombs } = store.getState();
 
     if (settings.music) audio.play();
     else if (!settings.music) audio.pause();
 
     Scores.innerText = score;
+    Bombs.innerText = bombs;
 
 });
 
 // store.dispatch({ type: 'Init' });
 store.dispatch({ type: RESET_SCORE });
+store.dispatch({ type: RESET_BOMBS });
 
 let frames = 0;
 window.prevStates = [];
@@ -48,7 +52,7 @@ export const startGame = (ip, players_quantity) => {
     THE_WORLD = new World(HEIGHT, WIDTH, PREDATOR_QUANTITY, ROCKS_QUANTITY, STARS_QUANTITY, BREAKS_QUANTITY, ip, players_quantity);
     Player.off = false;
     Player.flag = true;
-    store.dispatch({ type: RESET_SCORE });
+    store.dispatch({ type: RESET_BOMBS });
     prevStates.push(THE_WORLD.print());
     document.body.removeChild(GameScreen);
     window.pause = false;
