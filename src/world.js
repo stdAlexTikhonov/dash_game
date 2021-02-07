@@ -707,7 +707,10 @@ export class World {
         this.PREDATORS.forEach(PREDATOR => PREDATOR.changeState(this.world));
         this.ELECTRONS.forEach(PREDATOR => PREDATOR.changeState(this.world));
         this.ROCKS.forEach(ROCK => ROCK.changeState(this.world, this.player));
-        this.DISKS.forEach(DISK => DISK.changeState(this.world, this.player));
+        this.DISKS.forEach(DISK => {
+            if (DISK.changeState) DISK.changeState(this.world, this.player);
+            else console.log(DISK);
+        });
         this.STARS.forEach(STAR => STAR.changeState(this.world));
         this.EXPLOSIONS.forEach(EXP => EXP.changeState());
         this.ip && this.PLAYERS.forEach(PLAYER => {

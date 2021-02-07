@@ -1,4 +1,4 @@
-import { FRAME, LEFT, UP, FORCE_LEFT, RIGHT, FORCE_RIGHT, DOWN } from './constants';
+import { FRAME, LEFT, UP, FORCE_LEFT, RIGHT, FORCE_RIGHT, DOWN, STOP } from './constants';
 import { THE_WORLD } from "./index";
 let frame = FRAME;
 
