@@ -1,7 +1,7 @@
 import { 
     EMPTY, PLAYER, UP, DOWN,
     RIGHT, LEFT,
-    SCISSORS, ROCK, FOOD, ELECTRON
+    SCISSORS, ROCK, FOOD, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY
 } from "./constants";
 import sprite3 from "./assets/images/sprite3.png";
 import electron from "./assets/images/electron.png";
@@ -62,8 +62,9 @@ export class Predator {
     }
 
     find_death(world) {
-        const pt1 = world[this.y - 1][this.x].char === ROCK || world[this.y - 1][this.x].char === FOOD;
-        const pt2 = world[this.y][this.x].char === ROCK || world[this.y][this.x].char === FOOD;
+        const killers = [ROCK, FOOD, ORANGE_DISK];
+        const pt1 = killers.includes(world[this.y - 1][this.x].char);
+        const pt2 = killers.includes(world[this.y][this.x].char);
         return pt1 || pt2;
     }
 
