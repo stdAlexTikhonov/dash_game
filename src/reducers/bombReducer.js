@@ -1,4 +1,4 @@
-import { PLUS_ONE_BOMB, RESET_BOMBS, MINUS_ONE_BOMB} from "../actions/bombActions";
+import { PLUS_ONE_BOMB, RESET_BOMBS, MINUS_ONE_BOMB } from "../actions/bombActions";
 
 const init = 0
 

@@ -3,6 +3,7 @@ import {
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
     MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK, RED_DISK
 } from "./constants"
+import { store } from "./index";
 
 import sprite from './assets/images/sprite.png';
 
@@ -89,6 +90,12 @@ export class Player {
                 break;
             case MOVE_DOWN:
                 this.dy = this.prev_horizontal_state === MOVE_LEFT ? 0 : 2;
+                break;
+            case 'A':
+                this.dy = 0;
+                break;
+            case 'B':
+                this.dy = 2;
                 break;
             default:
                 this.dy = 0;
@@ -182,7 +189,7 @@ export class Player {
                 this.prev_horizontal_state = MOVE_RIGHT;
                 break;
             default:
-                this.merphy_state = STOP;
+                if (!store.getState().space_bar) this.merphy_state = STOP;
                 break;
         }
 
