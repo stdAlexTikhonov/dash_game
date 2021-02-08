@@ -8,7 +8,7 @@ export const bombReducer = (state = init, action) => {
         return state + 1;
       }
       case MINUS_ONE_BOMB: {
-        return state - 1;
+        return state > 0 ? state - 1 : 0;
       }
       case RESET_BOMBS:
         return init;
