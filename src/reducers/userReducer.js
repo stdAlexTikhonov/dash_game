@@ -1,11 +1,14 @@
-import { TOGGLE_SPACE_BAR } from "../actions/userActions";
+import { SET_SPACE_BAR, RESET_SPACE_BAR } from "../actions/userActions";
 
 const init = false;
 
 export const userReducer = (state = init, action) => {
     switch (action.type) {
-      case TOGGLE_SPACE_BAR: {
-        return !state;
+      case SET_SPACE_BAR: {
+        return true;
+      }
+      case RESET_SPACE_BAR: {
+        return false;
       }
       default:
         return state;

@@ -1,4 +1,4 @@
-import { TOGGLE_SPACE_BAR } from './actions/userActions';
+import { SET_SPACE_BAR, RESET_SPACE_BAR } from './actions/userActions';
 import { LEFT, UP, RIGHT, DOWN, MOVE_RIGHT, MOVE_LEFT, BOMB_RIGHT, BOMB_LEFT, BOMB_UP, BOMB_DOWN } from './constants';
 import { THE_WORLD } from "./index";
 import { store } from "./index";
@@ -29,7 +29,7 @@ document.onkeydown = e => {
             if (space_bar) THE_WORLD.player.merphy_state = BOMB_DOWN;
             break;
         case 32:
-            store.dispatch({ type: TOGGLE_SPACE_BAR });
+            store.dispatch({ type: SET_SPACE_BAR });
             break;
     }
 };
@@ -49,7 +49,7 @@ document.onkeyup = e => {
             if (THE_WORLD.player.dir === DOWN) THE_WORLD.player.dir = null;
             break;
         case 32:
-            store.dispatch({ type: TOGGLE_SPACE_BAR });
+            store.dispatch({ type: RESET_SPACE_BAR });
             break;
     }
 };
