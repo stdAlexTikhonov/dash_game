@@ -1,7 +1,7 @@
 import { 
     ROCK, SCISSORS, EMPTY, LEFT, RIGHT, ELECTRON,
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
-    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK, RED_DISK
+    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK, RED_DISK, BOMB_UP, BOMB_DOWN, BOMB_LEFT, BOMB_RIGHT
 } from "./constants"
 import { store } from "./index";
 
@@ -91,11 +91,21 @@ export class Player {
             case MOVE_DOWN:
                 this.dy = this.prev_horizontal_state === MOVE_LEFT ? 0 : 2;
                 break;
-            case 'A':
-                this.dy = 0;
+            case BOMB_LEFT:
+                this.dy = 3;
+                this.state = 2;
                 break;
-            case 'B':
-                this.dy = 2;
+            case BOMB_UP:
+                this.dy = 4;
+                this.state = 0;
+                break;
+            case BOMB_DOWN:
+                this.dy = 4;
+                this.state = 1;
+                break;
+            case BOMB_RIGHT:
+                this.dy = 4;
+                this.state = 2;
                 break;
             default:
                 this.dy = 0;

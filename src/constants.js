@@ -47,5 +47,10 @@ export const FORCE_RIGHT = "FORCE_RIGHT";
 export const MOVE_UP = "MOVE_UP";
 export const MOVE_DOWN = "MOVE_DOWN";
 
+export const BOMB_LEFT = "BOMB_LEFT";
+export const BOMB_RIGHT = "BOMB_RIGHT";
+export const BOMB_UP = "BOMB_UP";
+export const BOMB_DOWN = "BOMB_DOWN";
+
 export const FRAME = 9;
 export const SEED = 1;
