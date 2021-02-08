@@ -181,6 +181,9 @@ export class Player {
                 else this.merphy_state = STOP;
                 this.prev_horizontal_state = MOVE_RIGHT;
                 break;
+            default:
+                this.merphy_state = STOP;
+                break;
         }
 
         this.force = false;
