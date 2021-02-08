@@ -1,7 +1,7 @@
 import { 
     ROCK, SCISSORS, EMPTY, LEFT, RIGHT, ELECTRON,
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
-    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK
+    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK, RED_DISK
 } from "./constants"
 
 import sprite from './assets/images/sprite.png';
@@ -28,7 +28,7 @@ export class Player {
     }
 
     check(nxt, world) {
-        return [EMPTY, '*', '.', 'A'].includes(world[nxt.y][nxt.x].char);
+        return [EMPTY, '*', '.', 'A', RED_DISK].includes(world[nxt.y][nxt.x].char);
     }
 
     check_predator(nxt, world) {

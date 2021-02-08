@@ -1,5 +1,6 @@
 import { Pause } from "../Pause";
 import { Scores } from "../Scores";
+import { Bombs } from "../Bombs";
 import { Time } from "../Time";
 
 export const Dashboard = document.createElement('div');
@@ -13,4 +14,4 @@ Dashboard.style.padding = '10px';
 
 Dashboard.appendChild(Scores);
 Dashboard.appendChild(Time);
-Dashboard.appendChild(Pause);
+Dashboard.appendChild(Bombs);
