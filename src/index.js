@@ -23,16 +23,6 @@ export const audio = new Audio(background_audio);
 export const store = createStore(appReducer);
 
 
-store.subscribe(() => {
-    const { settings, score, bombs } = store.getState();
-
-    if (settings.music) audio.play();
-    else if (!settings.music) audio.pause();
-
-    Scores.innerText = score;
-    Bombs.innerText = bombs;
-
-});
 
 // store.dispatch({ type: 'Init' });
 store.dispatch({ type: RESET_SCORE });
@@ -47,6 +37,21 @@ document.body.appendChild(GameScreen);
 window.pause = false;
 window.myReq = null;
 export let THE_WORLD;
+
+
+store.subscribe(() => {
+    const { settings, score, bombs } = store.getState();
+
+    if (settings.music) audio.play();
+    else if (!settings.music) audio.pause();
+
+    Scores.innerText = score;
+    Bombs.innerText = bombs.quantity;
+    
+});
+
+
+
 export const startGame = (ip, players_quantity) => {
     store.dispatch({ type: RESET_SCORE });
     THE_WORLD = new World(HEIGHT, WIDTH, PREDATOR_QUANTITY, ROCKS_QUANTITY, STARS_QUANTITY, BREAKS_QUANTITY, ip, players_quantity);
