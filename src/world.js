@@ -5,7 +5,7 @@ import {
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
     WALL, GROUND, EMPTY, SCISSORS, elements, MAP_SIZE_CONSTANT,
-    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK
+    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC
 } from "./constants";
 import { sleep } from "./helpers";
 import { Player } from "./player";
@@ -13,6 +13,7 @@ import { Star } from "./star";
 import { Bomb } from "./bomb";
 import { Rock } from "./rock";
 import { Disk } from "./disk";
+import { Computer } from "./computer";
 import { Predator } from "./predator"
 import { Explosion } from "./explosion";
 import { Dashboard } from "./Components/Dashboard";
@@ -228,6 +229,10 @@ export class World {
         this.player = new Player(pp.y,pp.x);
         this.player.token = generateUID();
 
+        const pc = this.rndomizer();//player position
+
+        this.COMPUTER = new Computer(pc.y, pc.x);
+
         //Breaks
         this.BREAKS = [];
         for (let i = 0; i < breaks; i++) {
@@ -436,6 +441,8 @@ export class World {
         
         this.EXPLOSIONS.forEach(EXP => WORLD[EXP.y][EXP.x] = EXP);
 
+        WORLD[this.COMPUTER.y][this.COMPUTER.x] = this.COMPUTER;
+
         WORLD[this.EXIT.y][this.EXIT.x] = this.EXIT;
         return WORLD;
     }
@@ -591,6 +598,9 @@ export class World {
                         //     this.ctx_vp.drawImage(this.player.img, 0, BLOCK_WIDTH, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                         //     break;
                         case FIRE:
+                            this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
+                            break;
+                        case PC:
                             this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case EXIT:
@@ -776,6 +786,7 @@ export class World {
         });
         this.player.changeState(this.world);
         this.player.changePic();
+        this.COMPUTER.changeState();
         this.check_food();
         this.check_bombs();
         this.world = this.generate();
