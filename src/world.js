@@ -693,9 +693,9 @@ export class World {
             
             this.GROUND = this.GROUND.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.ROCKS = this.ROCKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
-            this.DISKS = this.DISKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? {...G, still_alive: false } : G);
             this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
-
+            this.ELECTRONS = this.ELECTRONS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? {...G, still_alive: false } : G);
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
