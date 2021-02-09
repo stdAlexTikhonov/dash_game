@@ -5,7 +5,7 @@ import {
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
     WALL, GROUND, EMPTY, SCISSORS, elements, MAP_SIZE_CONSTANT,
-    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK
+    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FIRE, FORCE_DOWN, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK
 } from "./constants";
 import { sleep } from "./helpers";
 import { Player } from "./player";
@@ -512,9 +512,11 @@ export class World {
                                 pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                 break;
                             case MOVE_UP:
+                            case FORCE_UP:
                                 pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                 break;
                             case MOVE_DOWN:
+                            case FORCE_DOWN:
                                 pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                 break;
                         }
@@ -574,6 +576,20 @@ export class World {
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case YELLOW_DISK:
+                            switch(this.player.merphy_state) {
+                                case FORCE_RIGHT:
+                                    pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                    break;
+                                case FORCE_LEFT:
+                                    pos_x -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                    break;
+                                case FORCE_UP:
+                                    pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                    break;
+                                case FORCE_DOWN:
+                                    pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                    break;
+                            }
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case FOOD:
@@ -594,9 +610,11 @@ export class World {
                                     pos_x -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                     break;
                                 case MOVE_UP:
+                                case FORCE_UP:
                                     pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                     break;
                                 case MOVE_DOWN:
+                                case FORCE_DOWN:
                                     pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                     break;
                             }
