@@ -7,6 +7,7 @@ export class Computer {
       this.x = x;
       this.y = y;
       this.state = 0;
+      this.dy = 0;
       this.char = PC;
       this.img = new Image();
       this.img.src = computer_sprite;
@@ -15,5 +16,6 @@ export class Computer {
 
     changeState() {
       this.state = this.state < 7 ? this.state + 1 : 0;
+      this.dy = this.active ? 1 : 0;
     }
 }
