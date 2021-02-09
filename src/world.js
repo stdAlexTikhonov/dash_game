@@ -36,6 +36,7 @@ import a8 from "./assets/images/a8.png";
 import a9 from "./assets/images/a9.png";
 import a10 from "./assets/images/a10.png";
 import { Bombs } from "./Components/Bombs";
+import { CLEAR_BOMB } from "./actions/bombActions";
 
 const parts = [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10];
 
@@ -669,7 +670,12 @@ export class World {
     }
 
     check_bombs() {
+        const { bombs } = store.getState();
         this.BOMBS = this.BOMBS.filter(bomb => bomb.still_here);
+        if (bombs.bomb) {
+            this.BOMBS.push(bombs.bomb);
+            store.dispatch({ type: CLEAR_BOMB });
+        }
     }
 
     check_rocks() {
