@@ -5,7 +5,7 @@ import { store } from "./index";
 import red_disk from "./assets/images/red_disk.png";
 
 export class Bomb {
-    constructor(y,x) {
+    constructor(y,x, count_down) {
         this.x = x;
         this.y = y;
         this.still_here = true;
@@ -16,6 +16,9 @@ export class Bomb {
         this.char = RED_DISK;
         this.img = new Image();
         this.img.src = red_disk;
+        this.state = 0;
+        this.counter = 10;
+        this.count_down = count_down;
     }
 
     check_way_down(world) {
@@ -44,6 +47,8 @@ export class Bomb {
     }
 
     changeState(world) {
+        if (this.count_down) this.state = !!this.state ? 0 : 1;
+        this.counter = this.count_down ? this.counter - 1 : this.counter;
         this.right = false;
         this.left = false;
         if (world[this.y][this.x].char === PLAYER) { if (this.still_here) { 

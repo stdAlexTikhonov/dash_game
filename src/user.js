@@ -15,7 +15,7 @@ document.onkeydown = e => {
             THE_WORLD.player.dir = space_bar ? null : LEFT;
             if (space_bar) {
                 THE_WORLD.player.merphy_state = BOMB_LEFT;
-                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y, THE_WORLD.player.x-1) });
+                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y, THE_WORLD.player.x-1, true) });
             }
             break;
         case 38:
@@ -23,7 +23,7 @@ document.onkeydown = e => {
             THE_WORLD.player.dir = space_bar ? null : UP;
             if (space_bar) {
                 THE_WORLD.player.merphy_state = BOMB_UP;
-                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y - 1, THE_WORLD.player.x) });
+                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y - 1, THE_WORLD.player.x, true) });
             }
             break;
         case 39:
@@ -31,7 +31,7 @@ document.onkeydown = e => {
             THE_WORLD.player.dir = space_bar ? null : RIGHT;
             if (space_bar) {
                 THE_WORLD.player.merphy_state = BOMB_RIGHT;
-                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y, THE_WORLD.player.x+1) });
+                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y, THE_WORLD.player.x+1, true) });
             }
             break;
         case 40:
@@ -39,7 +39,7 @@ document.onkeydown = e => {
             THE_WORLD.player.dir = space_bar ? null : DOWN;
             if (space_bar) {
                 THE_WORLD.player.merphy_state = BOMB_DOWN;
-                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y+1, THE_WORLD.player.x) });
+                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y+1, THE_WORLD.player.x, true) });
             }
             break;
         case 32:

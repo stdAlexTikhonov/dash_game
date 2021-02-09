@@ -16,6 +16,7 @@ export class Star {
         this.char = FOOD;
         this.img = new Image();
         this.img.src = food;
+        this.state = 0;
     }
 
     check_way_down(world) {
