@@ -1,7 +1,7 @@
 import { 
     ROCK, SCISSORS, EMPTY, LEFT, RIGHT, ELECTRON,
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
-    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK, RED_DISK, BOMB_UP, BOMB_DOWN, BOMB_LEFT, BOMB_RIGHT
+    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, YELLOW_DISK, ORANGE_DISK, RED_DISK, BOMB_UP, BOMB_DOWN, BOMB_LEFT, BOMB_RIGHT
 } from "./constants"
 import { store } from "./index";
 
@@ -37,12 +37,12 @@ export class Player {
     }
 
     check_force_move_left(world) {
-        const items = [ROCK, ORANGE_DISK];
+        const items = [ROCK, ORANGE_DISK, YELLOW_DISK];
         return items.includes(world[this.y][this.x-1].char) && world[this.y][this.x-2].char === EMPTY && this.force;
     }
 
     check_force_move_right(world) {
-        const items = [ROCK, ORANGE_DISK];
+        const items = [ROCK, ORANGE_DISK, YELLOW_DISK];
         return items.includes(world[this.y][this.x+1].char) && world[this.y][this.x+2].char === EMPTY && this.force;
     }
 
