@@ -1,96 +1,70 @@
-import { FRAME, LEFT, UP, FORCE_LEFT, RIGHT, FORCE_RIGHT, DOWN, STOP } from './constants';
+import { PUT_BOMB } from './actions/bombActions';
+import { Bomb } from "./bomb";
+import { SET_SPACE_BAR, RESET_SPACE_BAR } from './actions/userActions';
+import { LEFT, UP, RIGHT, DOWN, BOMB_RIGHT, BOMB_LEFT, BOMB_UP, BOMB_DOWN } from './constants';
 import { THE_WORLD } from "./index";
-let frame = FRAME;
+import { store } from "./index";
+
 
 document.onkeydown = e => {
-    const player = THE_WORLD.player;
+    const { space_bar } = store.getState();
     
     switch (e.keyCode) {
         case 37:
-            if (THE_WORLD.player.dir === LEFT) THE_WORLD.player.force = true; 
-            else THE_WORLD.player.dir = LEFT;
-            THE_WORLD.ws && THE_WORLD.ws.send(JSON.stringify({ method: "CD", dir: LEFT, token: THE_WORLD.player.token, x: player.x, y: player.y }))
+            if ([null, LEFT].includes(THE_WORLD.player.dir)) THE_WORLD.player.force = true;
+            THE_WORLD.player.dir = space_bar ? null : LEFT;
+            if (space_bar) {
+                THE_WORLD.player.merphy_state = BOMB_LEFT;
+                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y, THE_WORLD.player.x-1, true) });
+            }
             break;
         case 38:
-            if (THE_WORLD.player.dir === UP) THE_WORLD.player.force = true;
-            else THE_WORLD.player.dir = UP;
-            THE_WORLD.ws && THE_WORLD.ws.send(JSON.stringify({ method: "CD", dir: UP, token: THE_WORLD.player.token, x: player.x, y: player.y }))
+            if ([null, UP].includes(THE_WORLD.player.dir)) THE_WORLD.player.force = true;
+            THE_WORLD.player.dir = space_bar ? null : UP;
+            if (space_bar) {
+                THE_WORLD.player.merphy_state = BOMB_UP;
+                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y - 1, THE_WORLD.player.x, true) });
+            }
             break;
         case 39:
-            if (THE_WORLD.player.dir === RIGHT) THE_WORLD.player.force = true;
-            else THE_WORLD.player.dir = RIGHT;
-            THE_WORLD.ws && THE_WORLD.ws.send(JSON.stringify({ method: "CD", dir: RIGHT, token: THE_WORLD.player.token, x: player.x, y: player.y }))
+            if ([null, RIGHT].includes(THE_WORLD.player.dir)) THE_WORLD.player.force = true;
+            THE_WORLD.player.dir = space_bar ? null : RIGHT;
+            if (space_bar) {
+                THE_WORLD.player.merphy_state = BOMB_RIGHT;
+                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y, THE_WORLD.player.x+1, true) });
+            }
             break;
         case 40:
-            if (THE_WORLD.player.dir === DOWN) THE_WORLD.player.force = true;
-            else THE_WORLD.player.dir = DOWN;
-            THE_WORLD.ws && THE_WORLD.ws.send(JSON.stringify({ method: "CD", dir: DOWN, token: THE_WORLD.player.token, x: player.x, y: player.y }))
-            break;
-        case 190:
-            if (window.pause) {
-                
-                if (frame < FRAME) { 
-                    frame++; 
-                    document.getElementsByTagName('pre')[0].innerText = window.prevStates[frame]
-                }
-                else {
-                    THE_WORLD.tick();
-                    document.getElementsByTagName('pre')[0].innerText = THE_WORLD.print();
-                    prevStates.push(THE_WORLD.print())
-                    if (prevStates.length > 10) prevStates = prevStates.slice(1, prevStates.length)
-                }
+            if ([null, DOWN].includes(THE_WORLD.player.dir)) THE_WORLD.player.force = true;
+            THE_WORLD.player.dir = space_bar ? null : DOWN;
+            if (space_bar) {
+                THE_WORLD.player.merphy_state = BOMB_DOWN;
+                store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y+1, THE_WORLD.player.x, true) });
             }
             break;
-        case 188:
-            if (window.pause) {
-                if (frame > 0) { frame--; console.log(frame); }
-                document.getElementsByTagName('pre')[0].innerText = window.prevStates[frame];
-            }
+        case 32:
+            store.dispatch({ type: SET_SPACE_BAR });
             break;
     }
-    
 };
 
 document.onkeyup = e => {
-    if (e.shiftKey === false) { frame = FRAME; }
-    
-}
+    switch (e.keyCode) {
+        case 37:
+            if (THE_WORLD.player.dir === LEFT) THE_WORLD.player.dir = null;
+            break;
+        case 38:
+            if (THE_WORLD.player.dir === UP) THE_WORLD.player.dir = null;
+            break;
+        case 39:
+            if (THE_WORLD.player.dir === RIGHT) THE_WORLD.player.dir = null;
+            break;
+        case 40:
+            if (THE_WORLD.player.dir === DOWN) THE_WORLD.player.dir = null;
+            break;
+        case 32:
+            store.dispatch({ type: RESET_SPACE_BAR });
+            break;
+    }
+};
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     THE_WORLD.container.onpointerdown = e => {
-//         pointerX = e.offsetX;
-//         pointerY = e.offsetY;
-//     };
-
-//     THE_WORLD.container.onpointerup = e => {
-//         const diffLeft = e.offsetX - pointerX;
-//         const diffUp = e.offsetY - pointerY;
-//         const vertical = Math.abs(diffLeft) < Math.abs(diffUp);
-
-
-//         if (vertical) {
-//             if (e.offsetY > pointerY) {
-//                 if (THE_WORLD.player.dir === DOWN) THE_WORLD.player.force = true;
-//                 else THE_WORLD.player.dir = DOWN;
-//                 THE_WORLD.ws && THE_WORLD.ws.send(JSON.stringify({ method: "CD", dir: DOWN, token: THE_WORLD.player.token, x: player.x, y: player.y }))
-//             } else {
-//                 if (THE_WORLD.player.dir === UP) THE_WORLD.player.force = true;
-//                 else THE_WORLD.player.dir = UP;
-//                 THE_WORLD.ws && THE_WORLD.ws.send(JSON.stringify({ method: "CD", dir: UP, token: THE_WORLD.player.token, x: player.x, y: player.y }))
-//             }
-//         } else {
-//             if (e.offsetX > pointerX) {
-//                 if (THE_WORLD.player.dir === RIGHT) THE_WORLD.player.force = true;
-//                 else THE_WORLD.player.dir = RIGHT;
-//                 THE_WORLD.ws && THE_WORLD.ws.send(JSON.stringify({ method: "CD", dir: RIGHT, token: THE_WORLD.player.token, x: player.x, y: player.y }))
-//             } else {
-//                 if (THE_WORLD.player.dir === LEFT) THE_WORLD.player.force = true; 
-//                 else THE_WORLD.player.dir = LEFT;
-//                 THE_WORLD.ws && THE_WORLD.ws.send(JSON.stringify({ method: "CD", dir: LEFT, token: THE_WORLD.player.token, x: player.x, y: player.y }))
-//             }
-//         }
-
-
-//     };
-
-// });

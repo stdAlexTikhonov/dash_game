@@ -1,8 +1,9 @@
 import { 
     ROCK, SCISSORS, EMPTY, LEFT, RIGHT, ELECTRON,
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
-    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK, RED_DISK
+    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, ORANGE_DISK_QUANTITY, ORANGE_DISK, RED_DISK, BOMB_UP, BOMB_DOWN, BOMB_LEFT, BOMB_RIGHT
 } from "./constants"
+import { store } from "./index";
 
 import sprite from './assets/images/sprite.png';
 
@@ -89,6 +90,22 @@ export class Player {
                 break;
             case MOVE_DOWN:
                 this.dy = this.prev_horizontal_state === MOVE_LEFT ? 0 : 2;
+                break;
+            case BOMB_LEFT:
+                this.dy = 3;
+                this.state = 2;
+                break;
+            case BOMB_UP:
+                this.dy = 4;
+                this.state = 0;
+                break;
+            case BOMB_DOWN:
+                this.dy = 4;
+                this.state = 1;
+                break;
+            case BOMB_RIGHT:
+                this.dy = 4;
+                this.state = 2;
                 break;
             default:
                 this.dy = 0;
@@ -180,6 +197,9 @@ export class Player {
                 else if (this.check_exit_right(world)) Player.off = true;
                 else this.merphy_state = STOP;
                 this.prev_horizontal_state = MOVE_RIGHT;
+                break;
+            default:
+                if (!store.getState().space_bar) this.merphy_state = STOP;
                 break;
         }
 

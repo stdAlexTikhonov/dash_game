@@ -1,0 +1,2 @@
+export const SET_SPACE_BAR = "SET_SPACE_BAR";
+export const RESET_SPACE_BAR = "RESET_SPACE_BAR";

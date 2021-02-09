@@ -36,6 +36,7 @@ import a8 from "./assets/images/a8.png";
 import a9 from "./assets/images/a9.png";
 import a10 from "./assets/images/a10.png";
 import { Bombs } from "./Components/Bombs";
+import { CLEAR_BOMB } from "./actions/bombActions";
 
 const parts = [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10];
 
@@ -564,7 +565,7 @@ export class World {
                             if (el.right) pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                             else if (el.left) pos_x -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                             else if (el.falling) pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH; 
-                            this.ctx_vp.drawImage(el.img, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
+                            this.ctx_vp.drawImage(el.img, el.state * BLOCK_WIDTH, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case PLAYER:
                             
@@ -669,7 +670,38 @@ export class World {
     }
 
     check_bombs() {
+        const { bombs } = store.getState();
         this.BOMBS = this.BOMBS.filter(bomb => bomb.still_here);
+        if (bombs.bomb) {
+            this.BOMBS.push(bombs.bomb);
+            store.dispatch({ type: CLEAR_BOMB });
+        }
+
+        const died = this.BOMBS.find(bomb => bomb.counter === 0);
+        if (died) {
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y-1, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x+1));
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x+1));
+            this.EXPLOSIONS.push(new Explosion(died.y-1, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y - 1, died.x + 1));
+
+            const arr = [ {x: died.x, y: died.y }, {x: died.x, y: died.y + 1 }, {x: died.x, y: died.y -1 }, {x: died.x + 1, y: died.y },{x: died.x - 1, y: died.y }, {x: died.x-1, y: died.y+1 },{x: died.x + 1, y: died.y + 1},{x: died.x -1, y: died.y -1 },{x: died.x+1, y: died.y -1 }]
+            
+            this.GROUND = this.GROUND.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.ROCKS = this.ROCKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.DISKS = this.DISKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
+        }
     }
 
     check_rocks() {

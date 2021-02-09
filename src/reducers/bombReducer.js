@@ -1,17 +1,28 @@
-import { PLUS_ONE_BOMB, RESET_BOMBS, MINUS_ONE_BOMB} from "../actions/bombActions";
+import { PLUS_ONE_BOMB, RESET_BOMBS, PUT_BOMB, CLEAR_BOMB } from "../actions/bombActions";
 
-const init = 0
+const init = { quantity: 0, bomb: null }
 
 export const bombReducer = (state = init, action) => {
     switch (action.type) {
       case PLUS_ONE_BOMB: {
-        return state + 1;
+        return {
+          ...state,
+          quantity: state.quantity + 1,
+        }
       }
-      case MINUS_ONE_BOMB: {
-        return state - 1;
+      case PUT_BOMB: {
+        return {
+          bomb: state.quantity > 0 ? action.bomb : null,
+          quantity: state.quantity > 0 ? state.quantity - 1 : 0
+        }
       }
       case RESET_BOMBS:
         return init;
+      case CLEAR_BOMB:
+        return {
+          ...state,
+          bomb: null,
+        }
       default:
         return state;
   }
