@@ -47,6 +47,8 @@ export const MOVE_LEFT = "MOVE_LEFT";
 export const MOVE_RIGHT = "MOVE_RIGHT";
 export const FORCE_LEFT = "FORCE_LEFT";
 export const FORCE_RIGHT = "FORCE_RIGHT";
+export const FORCE_UP = "FORCE_UP";
+export const FORCE_DOWN = "FORCE_DOWN";
 export const MOVE_UP = "MOVE_UP";
 export const MOVE_DOWN = "MOVE_DOWN";
 

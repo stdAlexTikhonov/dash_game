@@ -1,7 +1,7 @@
 import { 
     ROCK, SCISSORS, EMPTY, LEFT, RIGHT, ELECTRON,
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
-    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, YELLOW_DISK, ORANGE_DISK, RED_DISK, BOMB_UP, BOMB_DOWN, BOMB_LEFT, BOMB_RIGHT
+    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FORCE_DOWN, YELLOW_DISK, ORANGE_DISK, RED_DISK, BOMB_UP, BOMB_DOWN, BOMB_LEFT, BOMB_RIGHT
 } from "./constants"
 import { store } from "./index";
 
@@ -46,6 +46,16 @@ export class Player {
         return items.includes(world[this.y][this.x+1].char) && world[this.y][this.x+2].char === EMPTY && this.force;
     }
 
+    check_force_move_up(world) {
+        const items = [ROCK, ORANGE_DISK, YELLOW_DISK];
+        return items.includes(world[this.y-1][this.x].char) && world[this.y-2][this.x].char === EMPTY && this.force;
+    }
+
+    check_force_move_down(world) {
+        const items = [ROCK, ORANGE_DISK, YELLOW_DISK];
+        return items.includes(world[this.y+1][this.x].char) && world[this.y+2][this.x].char === EMPTY && this.force;
+    }
+
     check_exit_right(world) {
         return world[this.y][this.x+1].char === EXIT && this.force;
     }
@@ -81,9 +91,17 @@ export class Player {
                 this.dy = 3;
                 this.state = 1;
                 break;
+            case FORCE_UP:
+                this.dy = 3;
+                this.state = this.prev_horizontal_state === MOVE_LEFT ? 1 : 0;
+                break;
             case FORCE_RIGHT:
                 this.dy = 3;
                 this.state = 0;
+                break;
+            case FORCE_DOWN:
+                this.dy = 3;
+                this.state = this.prev_horizontal_state === MOVE_LEFT ? 1 : 0;
                 break;
             case MOVE_UP:
                 this.dy = this.prev_horizontal_state === MOVE_LEFT ? 0 : 2;
@@ -111,39 +129,6 @@ export class Player {
                 this.dy = 0;
                 break;
         }
-        
-        // switch (this.merphy_state) {
-        //     case STOP:
-        //         // if (seconds % 10 === 0) this.time_to_sleep = true;
-        //         // if(this.time_to_sleep && this.state < 12) this.state +=1;
-        //         // else { this.state = 0; this.time_to_sleep = false; }
-        //         this.img.src = merphy_sleep[0];
-        //         break;
-        //     case MOVE_LEFT:
-        //         if( this.state < 2) this.state +=1;
-        //         else this.state = 0;
-        //         this.img.src = merphy_left[this.state];
-        //         this.pic_sequence = merphy_left;
-        //         break;
-        //     case MOVE_RIGHT:
-        //         if( this.state < 2) this.state +=1;
-        //         else this.state = 0;
-        //         this.img.src = merphy_right[this.state];
-        //         this.pic_sequence = merphy_right;
-        //         break;
-        //     case FORCE_LEFT:
-        //         this.img.src = meprhy_force_left;
-        //         break;
-        //     case FORCE_RIGHT:
-        //         this.img.src = meprhy_force_right;
-        //         break;
-        //     case MOVE_UP:
-        //     case MOVE_DOWN:
-        //         if( this.state < 2) this.state +=1;
-        //         else this.state = 0;
-        //         this.img.src = this.pic_sequence[this.state];
-        //         break;
-        // }
 
     }
 
@@ -160,6 +145,9 @@ export class Player {
                     this.y -= 1;
                     if (!this.EMPTIES.some(point => point.x === this.x && point.y === this.y)) this.EMPTIES.push({ x: this.x, y: this.y});
                 }
+                else if (this.check_force_move_up(world)) {
+                    this.y -= 1; this.merphy_state = FORCE_UP;
+                }
                 else if (this.check_exit_up(world)) Player.off = true;
                 else this.merphy_state = STOP;
                 break;
@@ -171,6 +159,8 @@ export class Player {
                     this.y += 1;
                     this.merphy_state = MOVE_DOWN;
                     if (!this.EMPTIES.some(point => point.x === this.x && point.y === this.y)) this.EMPTIES.push({ x: this.x, y: this.y, char: EMPTY});
+                } else if (this.check_force_move_down(world)) {
+                    this.y += 1; this.merphy_state = FORCE_DOWN;
                 } else if (this.check_exit_down(world)) Player.off = true;
                 else this.merphy_state = STOP;
                 break;

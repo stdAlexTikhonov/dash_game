@@ -584,7 +584,6 @@ export class World {
                             this.ctx_vp.drawImage(el.img, el.state * BLOCK_WIDTH, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case PLAYER:
-                            
                             switch(el.merphy_state) {
                                 case MOVE_RIGHT:
                                 case FORCE_RIGHT:
