@@ -88,11 +88,6 @@ export class World {
         this.pause = false;
         this.start = !ip;
         this.ip = ip;
-        // this.canvas = document.createElement('canvas');
-        // this.canvas.id = 'canvas';
-        // this.canvas.width = WIDTH * BLOCK_WIDTH;
-        // this.canvas.height = HEIGHT * BLOCK_WIDTH;
-        // this.ctx = this.canvas.getContext("2d");
         this.container = document.createElement('div');
         this.container.style.position = 'relative';
         this.appendCanvas();
