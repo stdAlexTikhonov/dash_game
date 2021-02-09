@@ -27,6 +27,7 @@ export const PART = 'P';
 export const ELECTRON = "::";
 export const ORANGE_DISK = "OD";
 export const RED_DISK = "RD";
+export const PC = "PC";
 
 export const elements = [WALL, GROUND, ROCK, BREAK, FOOD];
 
