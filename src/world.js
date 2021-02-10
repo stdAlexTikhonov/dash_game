@@ -5,7 +5,7 @@ import {
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
     WALL, GROUND, EMPTY, SCISSORS, elements, MAP_SIZE_CONSTANT,
-    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FIRE, FORCE_DOWN, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK
+    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FIRE, FORCE_DOWN, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK, BUGS_QUANTITY, BUG
 } from "./constants";
 import { sleep } from "./helpers";
 import { Player } from "./player";
@@ -13,6 +13,7 @@ import { Star } from "./star";
 import { Bomb } from "./bomb";
 import { Rock } from "./rock";
 import { Disk } from "./disk";
+import { Bug } from "./bug";
 import { Computer } from "./computer";
 import { Predator } from "./predator"
 import { Explosion } from "./explosion";
@@ -213,6 +214,13 @@ export class World {
 
         //WALLS
         this.WALLS = [];
+
+        this.BUGS = [];
+        for (let i = 0; i < BUGS_QUANTITY; i++) {
+            const pip = this.rndomizer(); //predator init position
+            this.BUGS.push(new Bug(pip.y, pip.x));
+        }
+
 
         this.PARTS = [];
         for (let i = 0; i < parts.length; i++) {
@@ -443,6 +451,8 @@ export class World {
 
         this.PARTS.forEach(P => WORLD[P.y][P.x] = P);
 
+        this.BUGS.forEach(B => WORLD[B.y][B.x] = B);
+
         this.PLAYERS.forEach(P => WORLD[P.y][P.x] = P);
         
         this.EXPLOSIONS.forEach(EXP => WORLD[EXP.y][EXP.x] = EXP);
@@ -626,6 +636,9 @@ export class World {
                             break;
                         case PC:
                             this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, BLOCK_WIDTH * el.dy, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
+                            break;
+                        case BUG:
+                            this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case EXIT:
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
@@ -842,6 +855,7 @@ export class World {
         });
         this.STARS.forEach(STAR => STAR.changeState(this.world));
         this.BOMBS.forEach(BOMB => BOMB.changeState(this.world));
+        this.BUGS.forEach(bug => bug.changeState());
         this.EXPLOSIONS.forEach(EXP => EXP.changeState());
         this.ip && this.PLAYERS.forEach(PLAYER => {
             PLAYER.changeState(this.world);
@@ -850,6 +864,7 @@ export class World {
         this.player.changeState(this.world);
         this.player.changePic();
         this.COMPUTER.changeState();
+
         this.check_food();
         this.check_bombs();
         this.world = this.generate();

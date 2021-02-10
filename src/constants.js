@@ -29,6 +29,7 @@ export const ORANGE_DISK = "OD";
 export const YELLOW_DISK = "YD";
 export const RED_DISK = "RD";
 export const PC = "PC";
+export const BUG = "B";
 
 export const elements = [WALL, GROUND, ROCK, BREAK, FOOD];
 
@@ -40,6 +41,7 @@ export const BREAKS_QUANTITY = 10 * MAP_SIZE_CONSTANT * 2;//+0
 export const GROUND_QUANTITY = 300 * MAP_SIZE_CONSTANT * 2;//+0
 export const ORANGE_DISK_QUANTITY = 10 * MAP_SIZE_CONSTANT;
 export const YELLOW_DISK_QUANTITY = 5 * MAP_SIZE_CONSTANT;
+export const BUGS_QUANTITY = 10;
 
 
 export const STOP = "STOP";
