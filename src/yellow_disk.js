@@ -8,7 +8,8 @@ export class YellowDisk {
       this.char = YELLOW_DISK;
       this.img = new Image();
       this.img.src = disk;
-      this.still_alive = true;
+        this.still_alive = true;
+        this.move = false;
     }
 
   
@@ -31,18 +32,22 @@ export class YellowDisk {
 
 
     changeState(world, player) {
-
+        this.move = false;
       if (this.check_force_move_down(world) && player.force && player.dir === DOWN) {
           this.y += 1;
+          this.move = true;
       }
       else if (this.check_force_move_left(world) && player.force && player.dir === LEFT) {
           this.x -= 1
+          this.move = true;
       }
       else if (this.check_force_move_right(world) && player.force && player.dir === RIGHT) {
           this.x += 1
+          this.move = true;
       }
-      else if (this.check_force_move_up(world) &&player.force && player.dir === UP) {
-        this.y -= 1;
+      else if (this.check_force_move_up(world) && player.force && player.dir === UP) {
+          this.y -= 1;
+          this.move = true;
       }
 
     }

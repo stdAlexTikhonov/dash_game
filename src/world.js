@@ -576,20 +576,21 @@ export class World {
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case YELLOW_DISK:
-                            switch(this.player.merphy_state) {
-                                case FORCE_RIGHT:
-                                    pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
-                                    break;
-                                case FORCE_LEFT:
-                                    pos_x -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
-                                    break;
-                                case FORCE_UP:
-                                    pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
-                                    break;
-                                case FORCE_DOWN:
-                                    pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
-                                    break;
-                            }
+                            if (el.move)
+                                switch(this.player.merphy_state) {
+                                    case FORCE_RIGHT:
+                                        pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case FORCE_LEFT:
+                                        pos_x -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case FORCE_UP:
+                                        pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case FORCE_DOWN:
+                                        pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                }
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case FOOD:
