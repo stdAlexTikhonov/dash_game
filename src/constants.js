@@ -26,7 +26,9 @@ export const FIRE = 'F';
 export const PART = 'P';
 export const ELECTRON = "::";
 export const ORANGE_DISK = "OD";
+export const YELLOW_DISK = "YD";
 export const RED_DISK = "RD";
+export const PC = "PC";
 
 export const elements = [WALL, GROUND, ROCK, BREAK, FOOD];
 
@@ -37,6 +39,7 @@ export const BOMB_QUANTITY = 10;
 export const BREAKS_QUANTITY = 10 * MAP_SIZE_CONSTANT * 2;//+0
 export const GROUND_QUANTITY = 300 * MAP_SIZE_CONSTANT * 2;//+0
 export const ORANGE_DISK_QUANTITY = 10 * MAP_SIZE_CONSTANT;
+export const YELLOW_DISK_QUANTITY = 5 * MAP_SIZE_CONSTANT;
 
 
 export const STOP = "STOP";
@@ -44,6 +47,8 @@ export const MOVE_LEFT = "MOVE_LEFT";
 export const MOVE_RIGHT = "MOVE_RIGHT";
 export const FORCE_LEFT = "FORCE_LEFT";
 export const FORCE_RIGHT = "FORCE_RIGHT";
+export const FORCE_UP = "FORCE_UP";
+export const FORCE_DOWN = "FORCE_DOWN";
 export const MOVE_UP = "MOVE_UP";
 export const MOVE_DOWN = "MOVE_DOWN";
 

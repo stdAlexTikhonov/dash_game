@@ -18,6 +18,7 @@ import {
     BREAKS_QUANTITY, STEPS
 } from "./constants";
 import { RESET_BOMBS } from "./actions/bombActions";
+import { RESET_ACTIVATION } from "./actions/computerActions";
 
 export const audio = new Audio(background_audio);
 export const store = createStore(appReducer);
@@ -58,6 +59,7 @@ export const startGame = (ip, players_quantity) => {
     Player.off = false;
     Player.flag = true;
     store.dispatch({ type: RESET_BOMBS });
+    store.dispatch({ type: RESET_ACTIVATION });
     prevStates.push(THE_WORLD.print());
     document.body.removeChild(GameScreen);
     window.pause = false;

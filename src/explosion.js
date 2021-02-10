@@ -1,7 +1,4 @@
-import { PLAYER, SCISSORS, EMPTY, STARS_QUANTITY, FOOD, FIRE } from "./constants";
-import { Player } from "./player";
-import { PLUS_ONE } from "./actions/scoreActions";
-import { store } from "./index";
+import {  FIRE } from "./constants";
 
 import explosion_sprite from "./assets/images/explosion_sprite.png";
 

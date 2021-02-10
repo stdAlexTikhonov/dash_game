@@ -5,7 +5,7 @@ import {
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
     WALL, GROUND, EMPTY, SCISSORS, elements, MAP_SIZE_CONSTANT,
-    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, PLAYERS_QUANTITY, FIRE, REMOTE_PLAYER, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK
+    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FIRE, FORCE_DOWN, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK
 } from "./constants";
 import { sleep } from "./helpers";
 import { Player } from "./player";
@@ -13,8 +13,10 @@ import { Star } from "./star";
 import { Bomb } from "./bomb";
 import { Rock } from "./rock";
 import { Disk } from "./disk";
+import { Computer } from "./computer";
 import { Predator } from "./predator"
 import { Explosion } from "./explosion";
+import { YellowDisk } from "./yellow_disk";
 import { Dashboard } from "./Components/Dashboard";
 import { Time } from "./Components/Time";
 
@@ -87,11 +89,6 @@ export class World {
         this.pause = false;
         this.start = !ip;
         this.ip = ip;
-        // this.canvas = document.createElement('canvas');
-        // this.canvas.id = 'canvas';
-        // this.canvas.width = WIDTH * BLOCK_WIDTH;
-        // this.canvas.height = HEIGHT * BLOCK_WIDTH;
-        // this.ctx = this.canvas.getContext("2d");
         this.container = document.createElement('div');
         this.container.style.position = 'relative';
         this.appendCanvas();
@@ -228,6 +225,10 @@ export class World {
         this.player = new Player(pp.y,pp.x);
         this.player.token = generateUID();
 
+        const pc = this.rndomizer();//player position
+
+        this.COMPUTER = new Computer(pc.y, pc.x);
+
         //Breaks
         this.BREAKS = [];
         for (let i = 0; i < breaks; i++) {
@@ -264,6 +265,14 @@ export class World {
             const rip = this.rndomizer(); //predator init position
             this.DISKS.push(new Disk(rip.y, rip.x));
             this.DISKS.sort((a,b) => a.y - b.y);
+        }
+
+        //yellow disks
+        this.YELLOW_DISKS = [];
+        for (let i = 0; i < YELLOW_DISK_QUANTITY; i++) {
+            const rip = this.rndomizer(); //predator init position
+            this.YELLOW_DISKS.push(new YellowDisk(rip.y, rip.x));
+            this.YELLOW_DISKS.sort((a,b) => a.y - b.y);
         }
 
         //Stars
@@ -422,6 +431,8 @@ export class World {
 
         this.DISKS.forEach(D => WORLD[D.y][D.x] = D);
 
+        this.YELLOW_DISKS.forEach(D => WORLD[D.y][D.x] = D);
+
         this.STARS.forEach(S => WORLD[S.y][S.x] = S);
 
         this.BOMBS.forEach(S => WORLD[S.y][S.x] = S);
@@ -435,6 +446,8 @@ export class World {
         this.PLAYERS.forEach(P => WORLD[P.y][P.x] = P);
         
         this.EXPLOSIONS.forEach(EXP => WORLD[EXP.y][EXP.x] = EXP);
+
+        WORLD[this.COMPUTER.y][this.COMPUTER.x] = this.COMPUTER;
 
         WORLD[this.EXIT.y][this.EXIT.x] = this.EXIT;
         return WORLD;
@@ -499,9 +512,11 @@ export class World {
                                 pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                 break;
                             case MOVE_UP:
+                            case FORCE_UP:
                                 pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                 break;
                             case MOVE_DOWN:
+                            case FORCE_DOWN:
                                 pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                 break;
                         }
@@ -560,6 +575,24 @@ export class World {
                             else if (el.falling) pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH; 
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
+                        case YELLOW_DISK:
+                            if (el.move)
+                                switch(this.player.merphy_state) {
+                                    case FORCE_RIGHT:
+                                        pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case FORCE_LEFT:
+                                        pos_x -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case FORCE_UP:
+                                        pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                    case FORCE_DOWN:
+                                        pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
+                                        break;
+                                }
+                            this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
+                            break;
                         case FOOD:
                         case RED_DISK:
                             if (el.right) pos_x += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
@@ -568,7 +601,6 @@ export class World {
                             this.ctx_vp.drawImage(el.img, el.state * BLOCK_WIDTH, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case PLAYER:
-                            
                             switch(el.merphy_state) {
                                 case MOVE_RIGHT:
                                 case FORCE_RIGHT:
@@ -579,19 +611,21 @@ export class World {
                                     pos_x -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                     break;
                                 case MOVE_UP:
+                                case FORCE_UP:
                                     pos_y -= BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                     break;
                                 case MOVE_DOWN:
+                                case FORCE_DOWN:
                                     pos_y += BLOCK_WIDTH/STEPS * value - BLOCK_WIDTH;
                                     break;
                             }
                             this.ctx_vp.drawImage(el.img, el.state * BLOCK_WIDTH, el.dy * BLOCK_WIDTH, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
-                        // case REMOTE_PLAYER:
-                        //     this.ctx_vp.drawImage(this.player.img, 0, BLOCK_WIDTH, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
-                        //     break;
                         case FIRE:
                             this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
+                            break;
+                        case PC:
+                            this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, BLOCK_WIDTH * el.dy, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
                         case EXIT:
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
@@ -741,6 +775,43 @@ export class World {
         
     }
 
+    check_yellow_disks() {
+        
+        const some = this.YELLOW_DISKS.find(rock => !rock.still_alive);
+        if (some) {
+            this.YELLOW_DISKS.forEach(died => {
+                this.EXPLOSIONS.push(new Explosion(died.y, died.x));
+                this.EXPLOSIONS.push(new Explosion(died.y + 1, died.x));
+                this.EXPLOSIONS.push(new Explosion(died.y - 1, died.x));
+                this.EXPLOSIONS.push(new Explosion(died.y, died.x + 1));
+                this.EXPLOSIONS.push(new Explosion(died.y, died.x - 1));
+                this.EXPLOSIONS.push(new Explosion(died.y + 1, died.x - 1));
+                this.EXPLOSIONS.push(new Explosion(died.y + 1, died.x + 1));
+                this.EXPLOSIONS.push(new Explosion(died.y - 1, died.x - 1));
+                this.EXPLOSIONS.push(new Explosion(died.y - 1, died.x + 1));
+
+                const arr = [{ x: died.x, y: died.y }, { x: died.x, y: died.y + 1 }, { x: died.x, y: died.y - 1 }, { x: died.x + 1, y: died.y }, { x: died.x - 1, y: died.y }, { x: died.x - 1, y: died.y + 1 }, { x: died.x + 1, y: died.y + 1 }, { x: died.x - 1, y: died.y - 1 }, { x: died.x + 1, y: died.y - 1 }]
+                
+                this.GROUND = this.GROUND.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+                this.ROCKS = this.ROCKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+                this.DISKS = this.DISKS.filter(predator => predator.still_alive);
+
+                this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? { ...G, still_alive: false } : G);
+
+                this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+                
+                this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+                this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+                this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+                Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
+                
+            });
+            this.YELLOW_DISKS = [];
+        }
+        
+    }
+
     check_player() {
         if (Player.off && Player.flag) {
             Player.flag = false;
@@ -765,7 +836,9 @@ export class World {
         this.ROCKS.forEach(ROCK => ROCK.changeState(this.world, this.player));
         this.DISKS.forEach(DISK => {
             if (DISK.changeState) DISK.changeState(this.world, this.player);
-            else console.log(DISK);
+        });
+        this.YELLOW_DISKS.forEach(DISK => {
+            if (DISK.changeState) DISK.changeState(this.world, this.player);
         });
         this.STARS.forEach(STAR => STAR.changeState(this.world));
         this.BOMBS.forEach(BOMB => BOMB.changeState(this.world));
@@ -776,6 +849,7 @@ export class World {
         });
         this.player.changeState(this.world);
         this.player.changePic();
+        this.COMPUTER.changeState();
         this.check_food();
         this.check_bombs();
         this.world = this.generate();
@@ -784,6 +858,7 @@ export class World {
         this.check_electrons();
         this.check_rocks();
         this.check_disks();
+        this.check_yellow_disks();
         this.check_explosions();
     }
 
