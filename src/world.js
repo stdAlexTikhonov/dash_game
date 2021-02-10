@@ -676,6 +676,8 @@ export class World {
 
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
@@ -703,6 +705,8 @@ export class World {
             this.DISKS = this.DISKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             // this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -745,6 +749,8 @@ export class World {
             this.ELECTRONS = this.ELECTRONS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? {...G, still_alive: false } : G);
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
@@ -779,6 +785,8 @@ export class World {
             this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? { ...G, still_alive: false } : G);
 
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             
             this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -813,6 +821,8 @@ export class World {
                 this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? { ...G, still_alive: false } : G);
 
                 this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+                this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
                 
                 this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
                 this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -825,6 +835,43 @@ export class World {
         
     }
 
+    check_bugs() {
+        const { x, y } = this.player;
+        const died = this.BUGS.find(bug => x === bug.x && y === bug.y);
+        if (died) {
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y-1, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x+1));
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x+1));
+            this.EXPLOSIONS.push(new Explosion(died.y-1, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y - 1, died.x + 1));
+
+            const arr = [ {x: died.x, y: died.y }, {x: died.x, y: died.y + 1 }, {x: died.x, y: died.y -1 }, {x: died.x + 1, y: died.y },{x: died.x - 1, y: died.y }, {x: died.x-1, y: died.y+1 },{x: died.x + 1, y: died.y + 1},{x: died.x -1, y: died.y -1 },{x: died.x+1, y: died.y -1 }]
+            
+            this.GROUND = this.GROUND.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.ROCKS = this.ROCKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.DISKS = this.DISKS.filter(predator => predator.still_alive);
+
+            this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? { ...G, still_alive: false } : G);
+
+            this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this
+           
+            Player.off = true;
+          
+        }
+    }
+
     check_player() {
         if (Player.off && Player.flag) {
             Player.flag = false;
@@ -833,7 +880,7 @@ export class World {
         } else {
             this.player.animation = false;
             // sleep(2000);
-            stopGame();  
+            const timeout = setTimeout(() => { stopGame(); clearTimeout(timeout);}, 1000); 
             Time.innerText = "00:00";
         }
              
@@ -874,7 +921,9 @@ export class World {
         this.check_rocks();
         this.check_disks();
         this.check_yellow_disks();
+        this.check_bugs();
         this.check_explosions();
+
     }
 
 }
