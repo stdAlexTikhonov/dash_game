@@ -5,6 +5,7 @@ import { SET_SPACE_BAR, RESET_SPACE_BAR } from './actions/userActions';
 import { LEFT, UP, RIGHT, DOWN, BOMB_RIGHT, BOMB_LEFT, BOMB_UP, BOMB_DOWN, PC } from './constants';
 import { THE_WORLD } from "./index";
 import { store } from "./index";
+import { ACTIVATE_COMPUTER } from './actions/computerActions';
 
 
 document.onkeydown = e => {
@@ -15,7 +16,7 @@ document.onkeydown = e => {
             if ([null, LEFT].includes(THE_WORLD.player.dir)) THE_WORLD.player.force = true;
             THE_WORLD.player.dir = space_bar ? null : LEFT;
             if (space_bar && THE_WORLD.world[THE_WORLD.player.y][THE_WORLD.player.x - 1].char === PC) {
-                THE_WORLD.COMPUTER.active = true;
+                store.dispatch({ type: ACTIVATE_COMPUTER });
             } else if (space_bar) {
                 THE_WORLD.player.merphy_state = BOMB_LEFT;
                 store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y, THE_WORLD.player.x-1, true) });
@@ -25,7 +26,7 @@ document.onkeydown = e => {
             if ([null, UP].includes(THE_WORLD.player.dir)) THE_WORLD.player.force = true;
             THE_WORLD.player.dir = space_bar ? null : UP;
             if (space_bar && THE_WORLD.world[THE_WORLD.player.y-1][THE_WORLD.player.x].char === PC) {
-                THE_WORLD.COMPUTER.active = true;
+                store.dispatch({ type: ACTIVATE_COMPUTER });
             } else if (space_bar) {
                 THE_WORLD.player.merphy_state = BOMB_UP;
                 store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y - 1, THE_WORLD.player.x, true) });
@@ -35,7 +36,7 @@ document.onkeydown = e => {
             if ([null, RIGHT].includes(THE_WORLD.player.dir)) THE_WORLD.player.force = true;
             THE_WORLD.player.dir = space_bar ? null : RIGHT;
             if (space_bar && THE_WORLD.world[THE_WORLD.player.y][THE_WORLD.player.x + 1].char === PC) {
-                THE_WORLD.COMPUTER.active = true;
+                store.dispatch({ type: ACTIVATE_COMPUTER });
             } else if (space_bar) {
                 THE_WORLD.player.merphy_state = BOMB_RIGHT;
                 store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y, THE_WORLD.player.x+1, true) });
@@ -45,7 +46,7 @@ document.onkeydown = e => {
             if ([null, DOWN].includes(THE_WORLD.player.dir)) THE_WORLD.player.force = true;
             THE_WORLD.player.dir = space_bar ? null : DOWN;
             if (space_bar && THE_WORLD.world[THE_WORLD.player.y + 1][THE_WORLD.player.x].char === PC) {
-                THE_WORLD.COMPUTER.active = true;
+               store.dispatch({ type: ACTIVATE_COMPUTER });
             } else if (space_bar) {
                 THE_WORLD.player.merphy_state = BOMB_DOWN;
                 store.dispatch({ type: PUT_BOMB, bomb: new Bomb(THE_WORLD.player.y+1, THE_WORLD.player.x, true) });
