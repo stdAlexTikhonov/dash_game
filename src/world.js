@@ -424,6 +424,8 @@ export class World {
 
         this.GROUND.forEach(G => WORLD[G.y][G.x] = G);
 
+        this.BUGS.forEach(B => WORLD[B.y][B.x] = B);
+
         this.player.EMPTIES.forEach(P => WORLD[P.y][P.x] = { char: EMPTY});
 
         this.ip && this.PLAYERS.forEach(P => { 
@@ -450,8 +452,6 @@ export class World {
         this.WALLS.forEach(W => WORLD[W.y][W.x] = W);
 
         this.PARTS.forEach(P => WORLD[P.y][P.x] = P);
-
-        this.BUGS.forEach(B => WORLD[B.y][B.x] = B);
 
         this.PLAYERS.forEach(P => WORLD[P.y][P.x] = P);
         
