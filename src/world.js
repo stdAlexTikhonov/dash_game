@@ -5,7 +5,7 @@ import {
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
     WALL, GROUND, EMPTY, SCISSORS, elements, MAP_SIZE_CONSTANT,
-    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FIRE, FORCE_DOWN, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK
+    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FIRE, FORCE_DOWN, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK, BUGS_QUANTITY, BUG
 } from "./constants";
 import { sleep } from "./helpers";
 import { Player } from "./player";
@@ -13,6 +13,7 @@ import { Star } from "./star";
 import { Bomb } from "./bomb";
 import { Rock } from "./rock";
 import { Disk } from "./disk";
+import { Bug } from "./bug";
 import { Computer } from "./computer";
 import { Predator } from "./predator"
 import { Explosion } from "./explosion";
@@ -213,6 +214,13 @@ export class World {
 
         //WALLS
         this.WALLS = [];
+
+        this.BUGS = [];
+        for (let i = 0; i < BUGS_QUANTITY; i++) {
+            const pip = this.rndomizer(); //predator init position
+            this.BUGS.push(new Bug(pip.y, pip.x));
+        }
+
 
         this.PARTS = [];
         for (let i = 0; i < parts.length; i++) {
@@ -415,6 +423,8 @@ export class World {
         WORLD[this.height-1] = LAST_ROW;
 
         this.GROUND.forEach(G => WORLD[G.y][G.x] = G);
+
+        this.BUGS.forEach(B => WORLD[B.y][B.x] = B);
 
         this.player.EMPTIES.forEach(P => WORLD[P.y][P.x] = { char: EMPTY});
 
@@ -627,6 +637,9 @@ export class World {
                         case PC:
                             this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, BLOCK_WIDTH * el.dy, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
+                        case BUG:
+                            this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
+                            break;
                         case EXIT:
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
@@ -663,6 +676,8 @@ export class World {
 
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
@@ -690,6 +705,8 @@ export class World {
             this.DISKS = this.DISKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             // this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -732,6 +749,8 @@ export class World {
             this.ELECTRONS = this.ELECTRONS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? {...G, still_alive: false } : G);
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
@@ -766,6 +785,8 @@ export class World {
             this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? { ...G, still_alive: false } : G);
 
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             
             this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -800,6 +821,8 @@ export class World {
                 this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? { ...G, still_alive: false } : G);
 
                 this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+                this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
                 
                 this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
                 this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -812,6 +835,43 @@ export class World {
         
     }
 
+    check_bugs() {
+        const { x, y } = this.player;
+        const died = this.BUGS.find(bug => x === bug.x && y === bug.y && bug.killer);
+        if (died) {
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y-1, died.x));
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x+1));
+            this.EXPLOSIONS.push(new Explosion(died.y, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y+1, died.x+1));
+            this.EXPLOSIONS.push(new Explosion(died.y-1, died.x-1));
+            this.EXPLOSIONS.push(new Explosion(died.y - 1, died.x + 1));
+
+            const arr = [ {x: died.x, y: died.y }, {x: died.x, y: died.y + 1 }, {x: died.x, y: died.y -1 }, {x: died.x + 1, y: died.y },{x: died.x - 1, y: died.y }, {x: died.x-1, y: died.y+1 },{x: died.x + 1, y: died.y + 1},{x: died.x -1, y: died.y -1 },{x: died.x+1, y: died.y -1 }]
+            
+            this.GROUND = this.GROUND.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.ROCKS = this.ROCKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.DISKS = this.DISKS.filter(predator => predator.still_alive);
+
+            this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? { ...G, still_alive: false } : G);
+
+            this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            
+            this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+
+            this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this
+           
+            Player.off = true;
+          
+        }
+    }
+
     check_player() {
         if (Player.off && Player.flag) {
             Player.flag = false;
@@ -820,7 +880,7 @@ export class World {
         } else {
             this.player.animation = false;
             // sleep(2000);
-            stopGame();  
+            const timeout = setTimeout(() => { stopGame(); clearTimeout(timeout);}, 1000); 
             Time.innerText = "00:00";
         }
              
@@ -842,6 +902,7 @@ export class World {
         });
         this.STARS.forEach(STAR => STAR.changeState(this.world));
         this.BOMBS.forEach(BOMB => BOMB.changeState(this.world));
+        this.BUGS.forEach(bug => bug.changeState());
         this.EXPLOSIONS.forEach(EXP => EXP.changeState());
         this.ip && this.PLAYERS.forEach(PLAYER => {
             PLAYER.changeState(this.world);
@@ -850,6 +911,7 @@ export class World {
         this.player.changeState(this.world);
         this.player.changePic();
         this.COMPUTER.changeState();
+
         this.check_food();
         this.check_bombs();
         this.world = this.generate();
@@ -859,7 +921,9 @@ export class World {
         this.check_rocks();
         this.check_disks();
         this.check_yellow_disks();
+        this.check_bugs();
         this.check_explosions();
+
     }
 
 }
