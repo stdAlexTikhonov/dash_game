@@ -870,6 +870,9 @@ export class World {
             Player.off = true;
           
         }
+
+        const just_to_filter = this.BUGS.find(bug => x === bug.x && y === bug.y);
+        if (just_to_filter) this.BUGS = this.BUGS.filter(el => el.x !== just_to_filter.x && el.y !== just_to_filter.y)
     }
 
     check_player() {
