@@ -837,7 +837,7 @@ export class World {
 
     check_bugs() {
         const { x, y } = this.player;
-        const died = this.BUGS.find(bug => x === bug.x && y === bug.y);
+        const died = this.BUGS.find(bug => x === bug.x && y === bug.y && bug.killer);
         if (died) {
             this.EXPLOSIONS.push(new Explosion(died.y, died.x));
             this.EXPLOSIONS.push(new Explosion(died.y+1, died.x));
