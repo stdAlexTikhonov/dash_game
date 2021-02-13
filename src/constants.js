@@ -30,6 +30,7 @@ export const YELLOW_DISK = "YD";
 export const RED_DISK = "RD";
 export const PC = "PC";
 export const BUG = "B";
+export const PORTAL = "PO";
 
 export const elements = [WALL, GROUND, ROCK, BREAK, FOOD];
 
