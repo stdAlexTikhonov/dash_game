@@ -43,6 +43,7 @@ export const GROUND_QUANTITY = 300 * MAP_SIZE_CONSTANT * 2;//+0
 export const ORANGE_DISK_QUANTITY = 10 * MAP_SIZE_CONSTANT;
 export const YELLOW_DISK_QUANTITY = 5 * MAP_SIZE_CONSTANT;
 export const BUGS_QUANTITY = 10;
+export const PORTAL_QUANTITY = 12;
 
 
 export const STOP = "STOP";

@@ -1,7 +1,7 @@
 import { 
     ROCK, SCISSORS, EMPTY, LEFT, RIGHT, ELECTRON,
     UP, DOWN, STOP, MOVE_LEFT, MOVE_RIGHT,
-    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FORCE_DOWN, YELLOW_DISK, ORANGE_DISK, RED_DISK, BOMB_UP, BOMB_DOWN, BOMB_LEFT, BOMB_RIGHT, BUG,
+    MOVE_UP, MOVE_DOWN, PLAYER, EXIT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FORCE_DOWN, YELLOW_DISK, ORANGE_DISK, RED_DISK, BOMB_UP, BOMB_DOWN, BOMB_LEFT, BOMB_RIGHT, BUG, PORTAL,
 } from "./constants"
 import { store } from "./index";
 
@@ -29,7 +29,7 @@ export class Player {
     }
 
     check(nxt, world) {
-        return [EMPTY, '*', '.', 'A', RED_DISK, BUG].includes(world[nxt.y][nxt.x].char);
+        return [EMPTY, '*', '.', 'A', RED_DISK, BUG, PORTAL].includes(world[nxt.y][nxt.x].char);
     }
 
     check_predator(nxt, world) {
