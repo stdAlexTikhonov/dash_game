@@ -5,7 +5,7 @@ import {
     WIDTH, HEIGHT, BLOCK_WIDTH, UP, DOWN, RIGHT, LEFT,
     DIRS, PLAYER, ROCK, FOOD, BREAK, EXIT,
     WALL, GROUND, EMPTY, SCISSORS, elements, MAP_SIZE_CONSTANT,
-    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FIRE, FORCE_DOWN, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK, BUGS_QUANTITY, BUG
+    GROUND_QUANTITY, SEED, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, MOVE_DOWN, MOVE_UP, STEPS, MOVE_RIGHT, MOVE_LEFT, FORCE_LEFT, FORCE_RIGHT, FORCE_UP, FIRE, FORCE_DOWN, STOP, PART, ELECTRON, ORANGE_DISK, ORANGE_DISK_QUANTITY, BOMB_QUANTITY, RED_DISK, PC, YELLOW_DISK_QUANTITY, YELLOW_DISK, BUGS_QUANTITY, BUG, PORTAL, PORTAL_QUANTITY,
 } from "./constants";
 import { sleep } from "./helpers";
 import { Player } from "./player";
@@ -15,6 +15,7 @@ import { Rock } from "./rock";
 import { Disk } from "./disk";
 import { Bug } from "./bug";
 import { Computer } from "./computer";
+import { Portal } from "./portal";
 import { Predator } from "./predator"
 import { Explosion } from "./explosion";
 import { YellowDisk } from "./yellow_disk";
@@ -244,6 +245,14 @@ export class World {
             this.BREAKS.push({y: bip.y, x: bip.x, char: BREAK, img: break_img });
         }
 
+        //Portals
+        this.PORTALS = [];
+        for (let i = 0; i < PORTAL_QUANTITY; i++) {
+            const pip = this.rndomizer(); //break init position
+            this.PORTALS.push(new Portal(pip.y, pip.x, i % 6));
+        }
+
+
         //Predators
         this.PREDATORS = [];
         for (let i = 0; i < predators_q; i++) {
@@ -460,6 +469,9 @@ export class World {
         WORLD[this.COMPUTER.y][this.COMPUTER.x] = this.COMPUTER;
 
         WORLD[this.EXIT.y][this.EXIT.x] = this.EXIT;
+
+        this.PORTALS.forEach(P => WORLD[P.y][P.x] = P);
+
         return WORLD;
     }
 
@@ -643,6 +655,9 @@ export class World {
                         case EXIT:
                             this.ctx_vp.drawImage(el.img, pos_x, pos_y,BLOCK_WIDTH, BLOCK_WIDTH);
                             break;
+                        case PORTAL:
+                            this.ctx_vp.drawImage(el.img, BLOCK_WIDTH * el.state, 0, BLOCK_WIDTH, BLOCK_WIDTH, pos_x, pos_y, BLOCK_WIDTH, BLOCK_WIDTH);
+                            break;
                     }
                
                                
@@ -679,6 +694,7 @@ export class World {
             this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
+            this.PORTALS = this.PORTALS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
         }
@@ -707,7 +723,7 @@ export class World {
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
             this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
-
+            this.PORTALS = this.PORTALS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             Player.off = arr.some(el => el.x === this.player.x && el.y === this.player.y);
@@ -748,7 +764,7 @@ export class World {
             this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.ELECTRONS = this.ELECTRONS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? {...G, still_alive: false } : G);
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
-
+            this.PORTALS = this.PORTALS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -785,7 +801,7 @@ export class World {
             this.DISKS = this.DISKS.map(G => arr.some(el => el.x === G.x && el.y === G.y) ? { ...G, still_alive: false } : G);
 
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
-
+            this.PORTALS = this.PORTALS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             
             this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -823,7 +839,7 @@ export class World {
                 this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
 
                 this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
-                
+                this.PORTALS = this.PORTALS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
                 this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
                 this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
                 this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
@@ -861,7 +877,7 @@ export class World {
             this.BOMBS = this.BOMBS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             
             this.BUGS = this.BUGS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
-
+            this.PORTALS = this.PORTALS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.STARS = this.STARS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.BREAKS = this.BREAKS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
             this.PARTS = this.PARTS.filter(G => !arr.some(el => el.x === G.x && el.y === G.y));
