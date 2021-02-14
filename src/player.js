@@ -25,11 +25,26 @@ export class Player {
         this.char = PLAYER
         this.prev_horizontal_state = MOVE_LEFT;
         this.animation = true;
-        
     }
 
     check(nxt, world) {
-        return [EMPTY, '*', '.', 'A', RED_DISK, BUG, PORTAL].includes(world[nxt.y][nxt.x].char);
+        return [EMPTY, '*', '.', 'A', RED_DISK, BUG].includes(world[nxt.y][nxt.x].char);
+    }
+
+    check_left_portal(nxt, world) {
+        return [0, 4, 5].includes(world[nxt.y][nxt.x].state) && this.dir === LEFT && world[nxt.y][nxt.x].char === PORTAL && this.check({ ...nxt, x: nxt.x - 1},world)
+    }
+
+    check_right_portal(nxt, world) {
+        return [2,4,5].includes(world[nxt.y][nxt.x].state) && this.dir === RIGHT && world[nxt.y][nxt.x].char === PORTAL && this.check({ ...nxt, x: nxt.x + 1},world)
+    }
+
+    check_bottom_portal(nxt, world) {
+        return [1,3,5].includes(world[nxt.y][nxt.x].state) && this.dir === DOWN && world[nxt.y][nxt.x].char === PORTAL && this.check({ ...nxt, y: nxt.y + 1},world)
+    }
+
+    check_top_portal(nxt, world) {
+        return [3,5].includes(world[nxt.y][nxt.x].state) && this.dir === UP && world[nxt.y][nxt.x].char === PORTAL && this.check({ ...nxt, y: nxt.y - 1},world)
     }
 
     check_predator(nxt, world) {
@@ -149,6 +164,10 @@ export class Player {
                     this.y -= 1; this.merphy_state = FORCE_UP;
                 }
                 else if (this.check_exit_up(world)) Player.off = true;
+                else if (this.check_top_portal({ x: this.x, y: this.y - 1 }, world)) {
+                    this.merphy_state = MOVE_UP;
+                    this.y -= 2;
+                }
                 else this.merphy_state = STOP;
                 break;
             case DOWN:
@@ -162,6 +181,10 @@ export class Player {
                 } else if (this.check_force_move_down(world)) {
                     this.y += 1; this.merphy_state = FORCE_DOWN;
                 } else if (this.check_exit_down(world)) Player.off = true;
+                else if (this.check_bottom_portal({ x: this.x, y: this.y + 1 }, world)) {
+                    this.merphy_state = MOVE_DOWN;
+                    this.y += 2;
+                }
                 else this.merphy_state = STOP;
                 break;
             case LEFT:
@@ -174,6 +197,10 @@ export class Player {
                     this.x -= 1; this.merphy_state = FORCE_LEFT;
                 }
                 else if (this.check_exit_left(world)) Player.off = true;
+                else if (this.check_left_portal({ x: this.x - 1, y: this.y }, world)) {
+                    this.merphy_state = MOVE_LEFT;
+                    this.x -= 2;
+                }
                 else this.merphy_state = STOP;
                 this.prev_horizontal_state = MOVE_LEFT;
                 break;
@@ -185,6 +212,10 @@ export class Player {
                     if (!this.EMPTIES.some(point => point.x === this.x && point.y === this.y)) this.EMPTIES.push({ x: this.x, y: this.y, char: EMPTY});
                 } else if (this.check_force_move_right(world)) { this.x += 1; this.merphy_state = FORCE_RIGHT; }
                 else if (this.check_exit_right(world)) Player.off = true;
+                else if (this.check_right_portal({ x: this.x + 1, y: this.y }, world)) {
+                    this.merphy_state = MOVE_RIGHT;
+                    this.x += 2;
+                }
                 else this.merphy_state = STOP;
                 this.prev_horizontal_state = MOVE_RIGHT;
                 break;

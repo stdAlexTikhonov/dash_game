@@ -249,7 +249,7 @@ export class World {
         this.PORTALS = [];
         for (let i = 0; i < PORTAL_QUANTITY; i++) {
             const pip = this.rndomizer(); //break init position
-            this.PORTALS.push(new Portal(pip.y, pip.x));
+            this.PORTALS.push(new Portal(pip.y, pip.x, i % 6));
         }
 
 
